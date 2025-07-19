@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  max-http-request-header-size: 8KB
+  tomcat:
+    max-http-response-header-size: 8KB
+
+spring:
+  application:
+    name: puresound-backend
+
+  profiles:
+    active: dev
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui/index.html
+    operationsSorter: method
+    csrf:
+      enabled: false

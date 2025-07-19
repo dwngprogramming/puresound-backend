@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/${MYSQL_DATABASE}
+    username: root
+    password: ${MYSQL_ROOT_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  docker:
+    compose:
+      file: docker-compose.dev.yml
+
+jwt:
+  secret: ${SECRET}
+  exp-at-min: ${EXP_AT_MIN}
+  exp-rt-min: ${EXP_RT_MIN}

@@ -1,0 +1,41 @@
+services:
+  mysql:
+    image: mysql:8.0.38
+    container_name: puresound-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    env_file:
+      - .env.dev
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - puresound-network
+
+  redis:
+    image: 'redis:7.4.3'
+    container_name: puresound-redis
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    env_file:
+      - .env.dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - puresound-network
+
+volumes:
+  mysql-data:
+  redis-data:
+
+networks:
+  puresound-network:
+    driver: bridge
