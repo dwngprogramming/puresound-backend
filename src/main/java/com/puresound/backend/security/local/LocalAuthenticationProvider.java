@@ -1,12 +1,14 @@
 package com.puresound.backend.security.local;
 
+import com.puresound.backend.constant.api.ApiMessage;
+import com.puresound.backend.constant.api.LogLevel;
+import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.service.user.UserService;
 import com.puresound.backend.service.user.router.UserServiceRouter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,8 +33,8 @@ public class LocalAuthenticationProvider implements AuthenticationProvider {
         UserService userService = router.resolve(token.getUserType());
         LocalAuthentication authInfo = userService.findByUsernameOrEmail(token.getUsernameOrEmail());
 
-        if (!authInfo.password().equals(passwordEncoder.encode(token.getPassword()))) {
-            throw new BadCredentialsException("Invalid password");
+        if (!passwordEncoder.matches(token.getPassword(), authInfo.password())) {
+            throw new BadRequestException(ApiMessage.LOGIN_WRONG_INFO, LogLevel.INFO);
         }
 
         List<GrantedAuthority> authorities = authInfo.roles().stream()

@@ -2,6 +2,10 @@ package com.puresound.backend.exception;
 
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.dto.ApiResponse;
+import com.puresound.backend.util.LogFactory;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -12,25 +16,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import com.puresound.backend.util.ApiResponseFactory;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 @RestControllerAdvice
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
 @Slf4j
 public class GlobalExceptionHandler {
-
     MessageSource messageSource;
+    ApiResponseFactory apiResponseFactory;
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ApiResponse<Void>> handleApplicationException(ApplicationException e, Locale locale) {
-        // With log, automatically using English
-        log.error("Exception from ApplicationException - Code: {}, Message: {}",
-                e.getApiMessage().name(), messageSource.getMessage(e.getMessage(), null, Locale.ENGLISH));
+        LogFactory.createApplicationLog(e.getLogLevel(), e.getApiMessage(), messageSource, e);
         return ResponseEntity
                 .status(e.getStatus())
-                .body(buildResponse(e.getApiMessage(), locale));
+                .body(apiResponseFactory.create(e.getApiMessage(), locale));
     }
 
     @ExceptionHandler(Exception.class)
@@ -38,7 +43,7 @@ public class GlobalExceptionHandler {
         log.error("Unexpected error occurred: {}", e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(buildResponse(ApiMessage.INTERNAL_SERVER_ERROR, locale));
+                .body(apiResponseFactory.create(ApiMessage.INTERNAL_SERVER_ERROR, locale));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,7 +53,7 @@ public class GlobalExceptionHandler {
         log.warn("Validation failed: {}", errors);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(buildResponse(ApiMessage.INVALID_REQUEST, errors, locale));
+                .body(apiResponseFactory.create(ApiMessage.INVALID_REQUEST, errors, locale));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -56,7 +61,7 @@ public class GlobalExceptionHandler {
         log.error("Type mismatch: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(buildResponse(ApiMessage.MISMATCH_REQUEST, locale));
+                .body(apiResponseFactory.create(ApiMessage.MISMATCH_REQUEST, locale));
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -64,7 +69,7 @@ public class GlobalExceptionHandler {
         log.error("User not found: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(buildResponse(ApiMessage.LOGIN_WRONG_INFO, locale));
+                .body(apiResponseFactory.create(ApiMessage.LOGIN_WRONG_INFO, locale));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
@@ -72,14 +77,6 @@ public class GlobalExceptionHandler {
         log.error("Resource not found: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(buildResponse(ApiMessage.SYSTEM_RESOURCE_NOT_FOUND, locale));
-    }
-
-    private ApiResponse<Void> buildResponse(ApiMessage apiMessage, Locale locale) {
-        return new ApiResponse<>(apiMessage.name(), messageSource.getMessage(apiMessage.name(), null, locale));
-    }
-
-    private <T> ApiResponse<T> buildResponse(ApiMessage apiMessage, T data, Locale locale) {
-        return new ApiResponse<>(apiMessage.name(), messageSource.getMessage(apiMessage.name(), null, locale), data);
+                .body(apiResponseFactory.create(ApiMessage.SYSTEM_RESOURCE_NOT_FOUND, locale));
     }
 }

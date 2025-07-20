@@ -1,9 +1,7 @@
 package com.puresound.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
 
-@Builder
 public record ApiResponse<T>(
         String code,
         String message,

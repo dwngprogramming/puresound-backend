@@ -1,6 +1,7 @@
 package com.puresound.backend.constant.user;
 
 import com.puresound.backend.constant.api.ApiMessage;
+import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.exception.exts.BadRequestException;
 
 public enum UserType {
@@ -14,7 +15,7 @@ public enum UserType {
         try {
             return UserType.valueOf(value.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new BadRequestException(ApiMessage.UNKNOWN_USER_TYPE);
+            throw new BadRequestException(ApiMessage.UNKNOWN_USER_TYPE, LogLevel.INFO);
         }
     }
 }
