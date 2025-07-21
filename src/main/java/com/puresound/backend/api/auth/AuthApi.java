@@ -12,7 +12,7 @@ import com.puresound.backend.security.local.LocalAuthenticationToken;
 import com.puresound.backend.security.local.UserPrincipal;
 import com.puresound.backend.service.user.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -41,9 +41,9 @@ public class AuthApi {
     UserServiceImpl userService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@NotNull @RequestBody LoginRequest request, Locale locale) {
+    public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LoginRequest request, Locale locale) {
         if (!userService.isEmail(request.usernameOrEmail()) && !userService.isUsername(request.usernameOrEmail())) {
-            throw new BadRequestException(ApiMessage.LOGIN_WRONG_INFO, LogLevel.INFO);
+            throw new BadRequestException(ApiMessage.INVALID_UOE_FORMAT, LogLevel.INFO);
         }
 
         Authentication authentication = authenticationManager.authenticate(

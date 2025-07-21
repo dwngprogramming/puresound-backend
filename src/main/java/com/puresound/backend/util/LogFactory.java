@@ -13,18 +13,28 @@ import java.util.Locale;
 public class LogFactory {
     public static void createApplicationLog(LogLevel logLevel, ApiMessage apiMessage, MessageSource messageSource, Exception ex) {
         StackTraceElement thrower = ex.getStackTrace()[0];
-        String throwerInfo = thrower.getClassName() + "." + thrower.getMethodName() + "(" +
-                thrower.getFileName() + ":" + thrower.getLineNumber() + ")";
         // With log, automatically using English
+        String message = messageSource.getMessage(apiMessage.name(), null, Locale.ENGLISH);
+        String detail = ex.getMessage();
+        String throwerInfo = String.format("%s.%s(%s:%d)",
+                thrower.getClassName(),
+                thrower.getMethodName(),
+                thrower.getFileName(),
+                thrower.getLineNumber());
+
+        String logMessage = String.format("""
+                        Exception from ApplicationException:
+                        - Code: %s
+                        - Message: %s
+                        - Detail Log: %s
+                        \tat %s""",
+                apiMessage.name(), message, detail, throwerInfo);
+
         switch (logLevel) {
-            case DEBUG -> log.debug("Exception from ApplicationException - Code: {}, Message: {}, Thrower: {}",
-                    apiMessage.name(), messageSource.getMessage(apiMessage.name(), null, Locale.ENGLISH), throwerInfo);
-            case INFO -> log.info("Exception from ApplicationException - Code: {}, Message: {}, Caller: {}",
-                    apiMessage.name(), messageSource.getMessage(apiMessage.name(), null, Locale.ENGLISH), throwerInfo);
-            case WARN -> log.warn("Exception from ApplicationException - Code: {}, Message: {}, Caller: {}",
-                    apiMessage.name(), messageSource.getMessage(apiMessage.name(), null, Locale.ENGLISH), throwerInfo);
-            case ERROR -> log.error("Exception from ApplicationException - Code: {}, Message: {}, Caller: {}",
-                    apiMessage.name(), messageSource.getMessage(apiMessage.name(), null, Locale.ENGLISH), throwerInfo);
+            case DEBUG -> log.debug(logMessage);
+            case INFO -> log.info(logMessage);
+            case WARN -> log.warn(logMessage);
+            case ERROR -> log.error(logMessage);
         }
     }
 }

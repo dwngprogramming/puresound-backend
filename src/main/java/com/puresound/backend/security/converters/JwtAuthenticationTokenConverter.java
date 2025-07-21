@@ -26,7 +26,7 @@ public class JwtAuthenticationTokenConverter implements Converter<Jwt, AbstractA
         // Extract data from JWT
         String userId = jwt.getSubject();
         String userType = jwt.getClaimAsString("userType");
-        List<String> roles = jwt.getClaimAsStringList("roles");
+        List<String> jwtAuthorities = jwt.getClaimAsStringList("authorities");
 
         Collection<GrantedAuthority> authorities = roleConverter.convert(jwt);
         UserPrincipal principal;
@@ -34,7 +34,7 @@ public class JwtAuthenticationTokenConverter implements Converter<Jwt, AbstractA
         if (authorities == null || authorities.isEmpty()) {
             principal = new UserPrincipal(userId, UserType.fromString(userType), List.of());
         } else {
-            principal = new UserPrincipal(userId, UserType.fromString(userType), roles);
+            principal = new UserPrincipal(userId, UserType.fromString(userType), jwtAuthorities);
         }
 
         return new CustomJwtAuthenticationToken(jwt, authorities, principal);

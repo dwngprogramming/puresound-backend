@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class RoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
-        List<String> roles = jwt.getClaimAsStringList("roles");
+        List<String> roles = jwt.getClaimAsStringList("authorities");
         if (roles == null) return List.of();
 
         return roles.stream()

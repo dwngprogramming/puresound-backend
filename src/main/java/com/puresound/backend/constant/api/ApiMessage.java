@@ -1,11 +1,11 @@
 package com.puresound.backend.constant.api;
 
 public enum ApiMessage {
-    // Success
+    // Success + Logging
     GET_LISTENER_SUCCESS,
     LOGIN_SUCCESS,
 
-    // Fail
+    // Fail + Logging
     INVALID_REQUEST,
     MISMATCH_REQUEST,
     LOGIN_WRONG_INFO,
@@ -13,5 +13,10 @@ public enum ApiMessage {
     LISTENER_NOT_FOUND,
     UNKNOWN_USER_TYPE,
     INVALID_TOKEN,
-    INTERNAL_SERVER_ERROR
+    INTERNAL_SERVER_ERROR,
+    INVALID_UOE_FORMAT,
+
+    // Only for logging, don't show to user & don't create message locale
+    INVALID_FORMAT_TOKEN,
+
 }

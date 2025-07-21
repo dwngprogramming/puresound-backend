@@ -3,6 +3,7 @@ package com.puresound.backend.exception;
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.dto.ApiResponse;
 import com.puresound.backend.util.LogFactory;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception e, Locale locale) {
-        log.error("Unexpected error occurred: {}", e.getMessage());
+        log.error("Unexpected error occurred. [{}]: {}", e.getClass().getName(), e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(apiResponseFactory.create(ApiMessage.INTERNAL_SERVER_ERROR, locale));
@@ -50,7 +52,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex, Locale locale) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        log.warn("Validation failed: {}", errors);
+        log.warn("Validation failed. [MethodArgumentNotValidException]: {}", errors);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(apiResponseFactory.create(ApiMessage.INVALID_REQUEST, errors, locale));
@@ -58,7 +60,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, Locale locale) {
-        log.error("Type mismatch: {}", ex.getMessage());
+        log.error("Type mismatch. [MethodArgumentTypeMismatchException]: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(apiResponseFactory.create(ApiMessage.MISMATCH_REQUEST, locale));
@@ -66,7 +68,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleUsernameNotFoundException(UsernameNotFoundException ex, Locale locale) {
-        log.error("User not found: {}", ex.getMessage());
+        log.error("User not found. [UsernameNotFoundException]: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(apiResponseFactory.create(ApiMessage.LOGIN_WRONG_INFO, locale));
@@ -74,9 +76,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(NoResourceFoundException ex, Locale locale) {
-        log.error("Resource not found: {}", ex.getMessage());
+        log.error("Resource not found. [NoResourceFoundException]: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(apiResponseFactory.create(ApiMessage.SYSTEM_RESOURCE_NOT_FOUND, locale));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request, Locale locale) {
+        log.warn("Invalid request. [HttpMessageNotReadableException] at {}: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(apiResponseFactory.create(ApiMessage.INVALID_REQUEST, locale));
     }
 }

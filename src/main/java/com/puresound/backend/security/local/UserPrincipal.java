@@ -7,6 +7,6 @@ import java.util.List;
 public record UserPrincipal(
         String id,
         UserType userType,
-        List<String> roles
+        List<String> authorities
 ) {
 }

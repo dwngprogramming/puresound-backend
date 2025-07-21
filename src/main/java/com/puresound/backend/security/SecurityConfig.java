@@ -1,6 +1,8 @@
 package com.puresound.backend.security;
 
+import com.puresound.backend.constant.api.BypassSecurity;
 import com.puresound.backend.security.converters.JwtAuthenticationTokenConverter;
+import com.puresound.backend.security.jwt.JwtAuthenticationEntryPoint;
 import com.puresound.backend.security.local.LocalAuthenticationProvider;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,17 +34,20 @@ public class SecurityConfig {
     JwtDecoder jwtDecoder;
     JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
     LocalAuthenticationProvider localAuthenticationProvider;
+    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers(BypassSecurity.PUBLIC_ENDPOINTS).permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(localAuthenticationProvider)
                 .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .jwt(jwt -> jwt
                                 .decoder(jwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationTokenConverter)
