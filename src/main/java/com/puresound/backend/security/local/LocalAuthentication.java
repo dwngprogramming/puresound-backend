@@ -8,6 +8,7 @@ public record LocalAuthentication(
         String id,
         String usernameOrEmail,
         String password,
+        String fullname,
         UserType userType,
         List<String> roles
 ) {}

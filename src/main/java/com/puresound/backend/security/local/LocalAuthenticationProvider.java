@@ -41,7 +41,7 @@ public class LocalAuthenticationProvider implements AuthenticationProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        UserPrincipal principal = new UserPrincipal(authInfo.id(), authInfo.userType(), authInfo.roles());
+        UserPrincipal principal = new UserPrincipal(authInfo.id(), authInfo.fullname(), authInfo.userType(), authInfo.roles());
 
         return new LocalAuthenticationToken(principal, authorities);
     }

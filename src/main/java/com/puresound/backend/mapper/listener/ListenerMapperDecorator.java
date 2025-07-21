@@ -13,6 +13,7 @@ public abstract class ListenerMapperDecorator implements ListenerMapper {
 
     @Override
     public LocalAuthentication toLocalAuthentication(Listener listener) {
-        return new LocalAuthentication(listener.getId(), listener.getUsername(), listener.getPassword(), UserType.LISTENER, List.of());
+        String fullname = listener.getFirstname() + " " + listener.getLastname();
+        return new LocalAuthentication(listener.getId(), listener.getUsername(), listener.getPassword(), fullname, UserType.LISTENER, List.of());
     }
 }
