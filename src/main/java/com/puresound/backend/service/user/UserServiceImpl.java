@@ -25,7 +25,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LocalAuthentication findByUsernameOrEmail(String usernameOrEmail) {
-        log.warn("Not implemented method loadUserByUsername in UserServiceImpl");
+        log.warn("Not implemented method findByUsernameOrEmail in UserServiceImpl");
+        throw new UnsupportedOperationException("Not implemented this method in UserServiceImpl");
+    }
+
+    @Override
+    public LocalAuthentication findById(String id) {
+        log.warn("Not implemented method findById in UserServiceImpl");
         throw new UnsupportedOperationException("Not implemented this method in UserServiceImpl");
     }
 }

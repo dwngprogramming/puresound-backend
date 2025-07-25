@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -88,5 +89,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(apiResponseFactory.create(ApiMessage.INVALID_REQUEST, locale));
+    }
+
+    @ExceptionHandler(JwtValidationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleJwtValidationException(JwtValidationException ex, HttpServletRequest request, Locale locale) {
+        log.info("Invalid token. [JwtValidationException] at {}: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(apiResponseFactory.create(ApiMessage.INVALID_TOKEN, locale));
     }
 }

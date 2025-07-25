@@ -25,4 +25,11 @@ public class ListenerServiceImpl implements ListenerService {
                 .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
         return listenerMapper.toLocalAuthentication(listener);
     }
+
+    @Override
+    public LocalAuthentication findById(String id) {
+        Listener listener = listenerRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
+        return listenerMapper.toLocalAuthentication(listener);
+    }
 }

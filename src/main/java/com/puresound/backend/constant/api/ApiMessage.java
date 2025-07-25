@@ -17,6 +17,6 @@ public enum ApiMessage {
     INVALID_UOE_FORMAT,
 
     // Only for logging, don't show to user & don't create message locale
-    INVALID_FORMAT_TOKEN,
+    INVALID_FORMAT_TOKEN, REFRESH_TOKEN_SUCCESS,
 
 }

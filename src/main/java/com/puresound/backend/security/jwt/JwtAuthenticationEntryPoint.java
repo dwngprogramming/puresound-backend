@@ -8,7 +8,6 @@ import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.dto.ApiResponse;
 import com.puresound.backend.util.ApiResponseFactory;
 import com.puresound.backend.util.LogFactory;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
@@ -19,6 +18,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +49,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                     LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INVALID_TOKEN, messageSource, jose);
             case ParseException parse ->
                     LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INVALID_FORMAT_TOKEN, messageSource, parse);
+            case JwtValidationException jwt ->
+                    LogFactory.createApplicationLog(LogLevel.INFO, ApiMessage.INVALID_TOKEN, messageSource, jwt);
             case null, default ->
                     LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INTERNAL_SERVER_ERROR, messageSource, authException);
         }

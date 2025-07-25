@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -32,6 +34,8 @@ public class JwtTokenProvider {
 
     @Value("${jwt.exp-rt-min}")
     long expRtMin;
+
+    final JwtDecoder jwtDecoder;
 
     /**
      * Generate JWT access token
@@ -91,5 +95,9 @@ public class JwtTokenProvider {
         } catch (JOSEException e) {
             throw new RuntimeException("Failed to generate JWT token", e);
         }
+    }
+
+    public Jwt decodeToken(String token) {
+        return jwtDecoder.decode(token);
     }
 }
