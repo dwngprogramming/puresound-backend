@@ -24,6 +24,6 @@ spring:
       file: docker-compose.dev.yml
 
 jwt:
-  secret: ${SECRET}
+  secret: ${JWT_SECRET}
   exp-at-min: ${EXP_AT_MIN}
   exp-rt-min: ${EXP_RT_MIN}

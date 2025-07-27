@@ -11,6 +11,13 @@ spring:
   profiles:
     active: dev
 
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    cache-duration: 0
+    fallback-to-system-locale: false
+    always-use-message-format: false
+
 springdoc:
   api-docs:
     enabled: true
@@ -20,3 +27,7 @@ springdoc:
     operationsSorter: method
     csrf:
       enabled: false
+
+logging:
+  level:
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: ERROR
