@@ -27,3 +27,14 @@ jwt:
   secret: ${JWT_SECRET}
   exp-at-min: ${EXP_AT_MIN}
   exp-rt-min: ${EXP_RT_MIN}
+
+cookie:
+  secure: false
+  domain: ${COOKIE_DOMAIN}
+  same-site: Lax
+
+listener:
+  callback-url: ${CALLBACK_URL}
+
+artist:
+  callback-url: ${CALLBACK_URL}

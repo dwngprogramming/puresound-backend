@@ -1,4 +1,4 @@
-package com.puresound.backend.security.local;
+package com.puresound.backend.security.jwt;
 
 import com.puresound.backend.constant.user.UserType;
 

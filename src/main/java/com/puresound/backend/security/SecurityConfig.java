@@ -4,6 +4,7 @@ import com.puresound.backend.constant.api.BypassSecurity;
 import com.puresound.backend.security.converters.JwtAuthenticationTokenConverter;
 import com.puresound.backend.security.jwt.JwtAuthenticationEntryPoint;
 import com.puresound.backend.security.local.LocalAuthenticationProvider;
+import com.puresound.backend.security.oauth2.CustomOAuth2SuccessHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -35,6 +36,7 @@ public class SecurityConfig {
     JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
     LocalAuthenticationProvider localAuthenticationProvider;
     JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    CustomOAuth2SuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,12 +49,19 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(localAuthenticationProvider)
-                .oauth2ResourceServer(oauth2 -> oauth2
+                .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .decoder(jwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationTokenConverter)
                         )
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorize"))
+                        .redirectionEndpoint(redirection -> redirection.baseUri("/login/oauth2/code/*"))
+                        .successHandler(successHandler)
                 )
                 .build();
     }
@@ -62,10 +71,15 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // TODO: Change to only allow the frontend in future
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:3000",
+                "https://puresound.space",
+                "https://*.puresound.space"
+        ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);        // Allow cookies
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -7,8 +7,8 @@ import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.puresound.backend.security.local.UserPrincipal;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +22,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Component
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@RequiredArgsConstructor
+@Component
 public class JwtTokenProvider {
     @Value("${jwt.secret}")
     String secretKey;

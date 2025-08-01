@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -51,14 +52,28 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                     LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INVALID_FORMAT_TOKEN, messageSource, parse);
             case JwtValidationException jwt ->
                     LogFactory.createApplicationLog(LogLevel.INFO, ApiMessage.INVALID_TOKEN, messageSource, jwt);
-            case null, default ->
+            case null -> {
+                if (authException instanceof InsufficientAuthenticationException) {
+                    LogFactory.createApplicationLog(LogLevel.WARN, ApiMessage.UNAUTHENTICATED, messageSource, authException);
+                    apiMessage = ApiMessage.UNAUTHENTICATED;
+                } else {
+                    LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INTERNAL_SERVER_ERROR, messageSource, authException);
+                }
+            }
+            default ->
                     LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INTERNAL_SERVER_ERROR, messageSource, authException);
         }
 
+
         ApiResponse<Void> apiResponse = apiResponseFactory.create(apiMessage, locale);
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+        // Thêm CORS headers
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
 
         objectMapper.writeValue(response.getWriter(), apiResponse);
     }

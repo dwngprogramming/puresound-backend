@@ -3,6 +3,7 @@ package com.puresound.backend.mapper.listener;
 import com.puresound.backend.constant.user.UserType;
 import com.puresound.backend.entity.user.listener.Listener;
 import com.puresound.backend.security.local.LocalAuthentication;
+import com.puresound.backend.security.oauth2.OAuth2Authentication;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
@@ -15,5 +16,11 @@ public abstract class ListenerMapperDecorator implements ListenerMapper {
     public LocalAuthentication toLocalAuthentication(Listener listener) {
         String fullname = listener.getFirstname() + " " + listener.getLastname();
         return new LocalAuthentication(listener.getId(), listener.getUsername(), listener.getPassword(), fullname, UserType.LISTENER, List.of());
+    }
+
+    @Override
+    public OAuth2Authentication toOAuth2Authentication(Listener listener) {
+        String fullname = listener.getFirstname() + " " + listener.getLastname();
+        return new OAuth2Authentication(listener.getId(), listener.getEmail(), fullname, UserType.LISTENER);
     }
 }
