@@ -1,6 +1,7 @@
 package com.puresound.backend.entity.user.listener;
 
 import com.puresound.backend.constant.user.Gender;
+import com.puresound.backend.constant.user.OAuth2Provider;
 import com.puresound.backend.entity.Base;
 import com.puresound.backend.entity.user.device.Device;
 import jakarta.persistence.*;
@@ -45,6 +46,13 @@ public class Listener extends Base {
 
     @Column
     LocalDate dob;
+
+    @Column
+    String avatar;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oauth2")
+    OAuth2Provider oauth2;
 
     @OneToMany(mappedBy = "listener", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Device> devices;

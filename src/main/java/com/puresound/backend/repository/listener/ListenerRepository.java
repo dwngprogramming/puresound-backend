@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ListenerRepository extends JpaRepository<Listener, String> {
     @Query("SELECT l FROM Listener l WHERE l.username = :usernameOrEmail OR l.email = :usernameOrEmail")
     Optional<Listener> findByUsernameOrEmail(@Param("usernameOrEmail") String usernameOrEmail);
+
+    boolean existsByEmail(String email);
 }

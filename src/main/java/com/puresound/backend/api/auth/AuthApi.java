@@ -7,17 +7,19 @@ import com.puresound.backend.dto.ApiResponse;
 import com.puresound.backend.dto.auth.LoginRequest;
 import com.puresound.backend.dto.auth.TokenResponse;
 import com.puresound.backend.exception.exts.BadRequestException;
+import com.puresound.backend.security.cookie.CookieService;
 import com.puresound.backend.security.jwt.JwtTokenProvider;
+import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.security.local.LocalAuthentication;
 import com.puresound.backend.security.local.LocalAuthenticationToken;
-import com.puresound.backend.security.local.UserPrincipal;
 import com.puresound.backend.service.user.UserService;
 import com.puresound.backend.service.user.UserServiceImpl;
 import com.puresound.backend.service.user.router.UserServiceRouter;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,9 +47,12 @@ public class AuthApi {
     ApiResponseFactory apiResponseFactory;
     UserServiceImpl userService;
     UserServiceRouter userServiceRouter;
+    CookieService cookieService;
 
     @PostMapping("/local/login")
-    public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LoginRequest request, Locale locale) {
+    public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LoginRequest request,
+                                                                    Locale locale,
+                                                                    HttpServletResponse response) {
         if (!userService.isEmail(request.usernameOrEmail()) && !userService.isUsername(request.usernameOrEmail())) {
             throw new BadRequestException(ApiMessage.INVALID_UOE_FORMAT, LogLevel.INFO);
         }
@@ -60,7 +65,12 @@ public class AuthApi {
         String accessToken = jwtTokenProvider.generateAccessToken(principal);
         String refreshToken = jwtTokenProvider.generateRefreshToken(principal);
 
-        TokenResponse tokenResponse = new TokenResponse(accessToken, refreshToken);
+        TokenResponse tokenResponse = new TokenResponse(accessToken);
+        long maxAgeSeconds = jwtTokenProvider.getExpRtMin() * 60;
+
+        // Set RT to cookie
+        cookieService.setCookie("refreshToken", refreshToken, maxAgeSeconds, response);
+
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGIN_SUCCESS, tokenResponse, locale));
     }
 
@@ -74,8 +84,12 @@ public class AuthApi {
         return null;
     }
 
-    @PostMapping("/local/refresh-token")
-    public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(@Valid @RequestBody @NotNull String refreshToken, Locale locale) {
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(HttpServletRequest request, Locale locale) {
+        String refreshToken = cookieService.getCookie("refreshToken", request);
+        if (refreshToken == null) {
+            throw new BadRequestException(ApiMessage.MISSING_REFRESH_TOKEN, LogLevel.DEBUG);
+        }
         Jwt jwt = jwtTokenProvider.decodeToken(refreshToken);
         String userId = jwt.getSubject();
         String userType = jwt.getClaimAsString("userType");
@@ -85,7 +99,7 @@ public class AuthApi {
         UserPrincipal principal = new UserPrincipal(userId, auth.fullname(), UserType.fromString(userType), auth.roles());
         String accessToken = jwtTokenProvider.generateAccessToken(principal);
 
-        TokenResponse tokenResponse = new TokenResponse(accessToken, refreshToken);
+        TokenResponse tokenResponse = new TokenResponse(accessToken);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGIN_SUCCESS, tokenResponse, locale));
     }
 }

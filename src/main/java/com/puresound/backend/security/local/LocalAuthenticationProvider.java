@@ -3,6 +3,7 @@ package com.puresound.backend.security.local;
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.exception.exts.BadRequestException;
+import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.service.user.UserService;
 import com.puresound.backend.service.user.router.UserServiceRouter;
 import lombok.AccessLevel;

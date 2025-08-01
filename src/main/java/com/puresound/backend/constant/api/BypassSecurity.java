@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 public class BypassSecurity {
     public static final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/auth/**",
+            "/oauth2/**",
             "/api/v1/public/**",
             "/api/v1/files/public/**",
             "/swagger-ui/**",

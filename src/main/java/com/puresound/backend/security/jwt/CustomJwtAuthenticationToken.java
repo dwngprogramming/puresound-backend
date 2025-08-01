@@ -1,6 +1,5 @@
 package com.puresound.backend.security.jwt;
 
-import com.puresound.backend.security.local.UserPrincipal;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;

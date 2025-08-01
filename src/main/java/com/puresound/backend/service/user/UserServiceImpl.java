@@ -1,6 +1,7 @@
 package com.puresound.backend.service.user;
 
 import com.puresound.backend.security.local.LocalAuthentication;
+import com.puresound.backend.security.oauth2.OAuth2Authentication;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;

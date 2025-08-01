@@ -20,7 +20,7 @@ services:
       - puresound-network
 
   redis:
-    image: 'redis:7.4.3'
+    image: redis:7.4.3
     container_name: puresound-redis
     command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
     env_file:

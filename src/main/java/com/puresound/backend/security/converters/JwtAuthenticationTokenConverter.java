@@ -2,7 +2,7 @@ package com.puresound.backend.security.converters;
 
 import com.puresound.backend.constant.user.UserType;
 import com.puresound.backend.security.jwt.CustomJwtAuthenticationToken;
-import com.puresound.backend.security.local.UserPrincipal;
+import com.puresound.backend.security.jwt.UserPrincipal;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
