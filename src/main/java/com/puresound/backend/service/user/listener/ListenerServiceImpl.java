@@ -2,13 +2,17 @@ package com.puresound.backend.service.user.listener;
 
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.constant.api.LogLevel;
+import com.puresound.backend.constant.user.OAuth2Type;
+import com.puresound.backend.dto.auth.OAuth2ProviderRequest;
+import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.entity.user.listener.Listener;
 import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.mapper.listener.ListenerMapper;
-import com.puresound.backend.repository.listener.ListenerRepository;
+import com.puresound.backend.repository.jpa.listener.ListenerRepository;
 import com.puresound.backend.security.local.LocalAuthentication;
 import com.puresound.backend.security.oauth2.OAuth2Authentication;
+import com.puresound.backend.service.user.oauth2.OAuth2ProviderService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +24,8 @@ import org.springframework.stereotype.Service;
 public class ListenerServiceImpl implements ListenerService {
     ListenerRepository listenerRepository;
     ListenerMapper listenerMapper;
+    OAuth2ProviderService oauth2ProviderService;
+    private final OAuth2ProviderService oAuth2ProviderService;
 
     @Override
     public LocalAuthentication findByUsernameOrEmail(String usernameOrEmail) {
@@ -29,10 +35,10 @@ public class ListenerServiceImpl implements ListenerService {
     }
 
     @Override
-    public LocalAuthentication findById(String id) {
+    public RefreshAuthentication findToRefreshById(String id) {
         Listener listener = listenerRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
-        return listenerMapper.toLocalAuthentication(listener);
+        return listenerMapper.toRefreshAuthentication(listener);
     }
 
     @Override
@@ -44,11 +50,50 @@ public class ListenerServiceImpl implements ListenerService {
 
     @Override
     public void save(ListenerOAuthInfoRequest request) {
+        Listener listener = listenerMapper.toListener(request);
+        String listenerId = listenerRepository.save(listener).getId();
 
+        // Save OAuth2 Provider for this listener
+        OAuth2Type provider = request.oauth2();
+        saveOAuth2Provider(listenerId, provider);
     }
 
     @Override
     public boolean isEmailExists(String email) {
         return listenerRepository.existsByEmail(email);
+    }
+
+    @Override
+    public OAuth2Authentication findOAuth2ByEmail(String email) {
+        Listener listener = listenerRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
+        return listenerMapper.toOAuth2Authentication(listener);
+    }
+
+    @Override
+    public String findIdByEmail(String email) {
+        return listenerRepository.findByEmail(email)
+                .map(Listener::getId)
+                .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
+    }
+
+    @Override
+    public boolean isLinkedOAuth2Provider(String email, OAuth2Type provider) {
+        String listenerId = findIdByEmail(email);
+        OAuth2ProviderRequest oauth2ProviderRequest = new OAuth2ProviderRequest(listenerId, provider);
+        return oAuth2ProviderService
+                .findByUserIdAndProvider(oauth2ProviderRequest)
+                .isPresent();
+    }
+
+    @Override
+    public void linkOAuth2ToListener(String email, OAuth2Type provider) {
+        String listenerId = findIdByEmail(email);
+        saveOAuth2Provider(listenerId, provider);
+    }
+
+    private void saveOAuth2Provider(String listenerId, OAuth2Type provider) {
+        OAuth2ProviderRequest oauth2ProviderRequest = new OAuth2ProviderRequest(listenerId, provider);
+        oauth2ProviderService.save(oauth2ProviderRequest);
     }
 }
