@@ -8,5 +8,9 @@ import java.util.Optional;
 public interface OAuth2ProviderService {
     void save(OAuth2ProviderRequest request);
 
-    Optional<OAuth2Provider> findByUserIdAndProvider(OAuth2ProviderRequest request);
+    Optional<OAuth2Provider> findCurrentlyOAuth2Provider(OAuth2ProviderRequest request);
+
+    boolean wasUnlinkedBefore(OAuth2ProviderRequest request);
+
+    void link(OAuth2ProviderRequest request);
 }

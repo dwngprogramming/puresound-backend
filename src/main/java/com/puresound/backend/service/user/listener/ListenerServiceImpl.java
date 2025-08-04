@@ -55,7 +55,8 @@ public class ListenerServiceImpl implements ListenerService {
 
         // Save OAuth2 Provider for this listener
         OAuth2Type provider = request.oauth2();
-        saveOAuth2Provider(listenerId, provider);
+        OAuth2ProviderRequest oauth2ProviderRequest = new OAuth2ProviderRequest(listenerId, provider);
+        oAuth2ProviderService.save(oauth2ProviderRequest);
     }
 
     @Override
@@ -82,18 +83,19 @@ public class ListenerServiceImpl implements ListenerService {
         String listenerId = findIdByEmail(email);
         OAuth2ProviderRequest oauth2ProviderRequest = new OAuth2ProviderRequest(listenerId, provider);
         return oAuth2ProviderService
-                .findByUserIdAndProvider(oauth2ProviderRequest)
+                .findCurrentlyOAuth2Provider(oauth2ProviderRequest)
                 .isPresent();
     }
 
     @Override
     public void linkOAuth2ToListener(String email, OAuth2Type provider) {
         String listenerId = findIdByEmail(email);
-        saveOAuth2Provider(listenerId, provider);
-    }
-
-    private void saveOAuth2Provider(String listenerId, OAuth2Type provider) {
-        OAuth2ProviderRequest oauth2ProviderRequest = new OAuth2ProviderRequest(listenerId, provider);
-        oauth2ProviderService.save(oauth2ProviderRequest);
+        OAuth2ProviderRequest request = new OAuth2ProviderRequest(listenerId, provider);
+        // If unlinked before (isLinked = false now), link again
+        if (oAuth2ProviderService.wasUnlinkedBefore(request)) {
+            oAuth2ProviderService.link(request);
+        } else {
+            oauth2ProviderService.save(request);
+        }
     }
 }

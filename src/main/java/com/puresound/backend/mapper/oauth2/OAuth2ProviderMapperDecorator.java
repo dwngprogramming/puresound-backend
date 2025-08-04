@@ -15,7 +15,7 @@ public abstract class OAuth2ProviderMapperDecorator implements OAuth2ProviderMap
                 .userId(request.userId())
                 .provider(request.provider())
                 .linkedAt(LocalDateTime.now())
-                .isLinked(true)
+                .linked(true)
                 .build();
     }
 }
