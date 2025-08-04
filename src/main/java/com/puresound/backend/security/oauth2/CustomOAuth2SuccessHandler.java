@@ -38,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -75,8 +76,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String email = user.getAttribute("email");
         String givenName = user.getAttribute("given_name");
         String familyName = user.getAttribute("family_name");
-        String picture = user.getAttribute("picture");
-
+        String picture = getPictureUrl(user, providerType);
 
         String state = request.getParameter("state");
         if (state == null) {
@@ -144,5 +144,20 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
                 .toUriString();
 
         response.sendRedirect(redirectUrl);
+    }
+
+    @SuppressWarnings("unchecked")
+    private String getPictureUrl(OAuth2User oauth2User, OAuth2Type provider) {
+        switch (provider) {
+            case GOOGLE -> {
+                return oauth2User.getAttribute("picture");
+            }
+            case FACEBOOK -> {
+                Map<String, Object> pictureObj = oauth2User.getAttribute("picture");
+                Map<String, Object> dataObj = (Map<String, Object>) pictureObj.get("data");
+                return (String) dataObj.get("url");
+            }
+            default -> throw new InternalServerException(ApiMessage.INVALID_OAUTH2_PROVIDER.name());
+        }
     }
 }
