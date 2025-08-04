@@ -32,8 +32,8 @@ public class OAuth2Provider {
     @Column(name = "linked_at", nullable = false)
     LocalDateTime linkedAt;
 
-    @Column(name = "is_linked", nullable = false)
-    boolean isLinked;
+    @Column(name = "linked", nullable = false)
+    boolean linked;
 
     @Column(name = "unlinked_at")
     LocalDateTime unlinkedAt;

@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,7 +26,21 @@ public class DefaultOAuth2ProviderService implements OAuth2ProviderService {
     }
 
     @Override
-    public Optional<OAuth2Provider> findByUserIdAndProvider(OAuth2ProviderRequest request) {
-        return oauth2ProviderRepository.findByUserIdAndProvider(request.userId(), request.provider());
+    public Optional<OAuth2Provider> findCurrentlyOAuth2Provider(OAuth2ProviderRequest request) {
+        return oauth2ProviderRepository.findByUserIdAndProviderAndLinkedIsTrue(request.userId(), request.provider());
+    }
+
+    @Override
+    public boolean wasUnlinkedBefore(OAuth2ProviderRequest request) {
+        // Linked before (isLinked = false now)
+        return oauth2ProviderRepository
+                .findByUserIdAndProviderAndLinkedIsFalse(request.userId(), request.provider())
+                .isPresent();
+    }
+
+    @Transactional
+    @Override
+    public void link(OAuth2ProviderRequest request) {
+        oauth2ProviderRepository.link(request.userId(), request.provider());
     }
 }

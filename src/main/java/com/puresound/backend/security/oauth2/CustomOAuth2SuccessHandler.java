@@ -100,7 +100,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
                     ListenerOAuthInfoRequest listenerRequest = new ListenerOAuthInfoRequest(email, givenName, familyName, picture, providerType);
                     listenerService.save(listenerRequest);
                 } else {
-                    // Link OAuth2 Provider to Listener if email exists and not linked
+                    // Link OAuth2 Provider to Listener if email exists but not linked, or was unlinked in the past
                     if (!listenerService.isLinkedOAuth2Provider(email, providerType)) {
                         listenerService.linkOAuth2ToListener(email, providerType);
                         isNew = true;
