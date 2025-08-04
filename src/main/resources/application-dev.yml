@@ -34,7 +34,7 @@ cookie:
   same-site: Lax
 
 listener:
-  callback-url: ${CALLBACK_URL}
+  callback-url: ${LISTENER_CALLBACK_SUCCESS_URL}
 
 artist:
-  callback-url: ${CALLBACK_URL}
+  callback-url: ${ARTIST_CALLBACK_SUCCESS_URL}

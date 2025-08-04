@@ -1,5 +1,6 @@
 package com.puresound.backend.mapper.listener;
 
+import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.entity.user.listener.Listener;
 import com.puresound.backend.mapper.GlobalMapperConfig;
@@ -14,4 +15,5 @@ public interface ListenerMapper {
     LocalAuthentication toLocalAuthentication(Listener listener);
     OAuth2Authentication toOAuth2Authentication(Listener listener);
     Listener toListener(ListenerOAuthInfoRequest request);
+    RefreshAuthentication toRefreshAuthentication(Listener listener);
 }

@@ -1,4 +1,4 @@
-package com.puresound.backend.repository.listener;
+package com.puresound.backend.repository.jpa.listener;
 
 import com.puresound.backend.entity.user.listener.Listener;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +12,6 @@ public interface ListenerRepository extends JpaRepository<Listener, String> {
     Optional<Listener> findByUsernameOrEmail(@Param("usernameOrEmail") String usernameOrEmail);
 
     boolean existsByEmail(String email);
+
+    Optional<Listener> findByEmail(String email);
 }

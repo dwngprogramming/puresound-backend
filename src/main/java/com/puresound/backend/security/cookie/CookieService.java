@@ -41,6 +41,21 @@ public class CookieService {
         response.addHeader("Set-Cookie", cookie.toString());
     }
 
+    public void setCookieWithHttpOnlyFalse(String key, String value, long maxAge, HttpServletResponse response) {
+        if (key == null || value == null) throw new InternalServerException("Cookie key or value cannot be null");
+
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .httpOnly(false)
+                .secure(secure)
+                .maxAge(maxAge)
+                .path("/")
+                .domain(domain)
+                .sameSite(sameSite)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+    }
+
     public String getCookie(String key, HttpServletRequest request) {
         if (request.getCookies() == null) return null;
 

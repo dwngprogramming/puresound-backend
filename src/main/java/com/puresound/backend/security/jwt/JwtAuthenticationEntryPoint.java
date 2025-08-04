@@ -54,7 +54,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                     LogFactory.createApplicationLog(LogLevel.INFO, ApiMessage.INVALID_TOKEN, messageSource, jwt);
             case null -> {
                 if (authException instanceof InsufficientAuthenticationException) {
-                    LogFactory.createApplicationLog(LogLevel.WARN, ApiMessage.UNAUTHENTICATED, messageSource, authException);
+//                    LogFactory.createApplicationLog(LogLevel.INFO, ApiMessage.UNAUTHENTICATED, messageSource, authException);
+                    log.info("Unauthenticated. [InsufficientAuthenticationException]: {}", authException.getMessage(), authException);
                     apiMessage = ApiMessage.UNAUTHENTICATED;
                 } else {
                     LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INTERNAL_SERVER_ERROR, messageSource, authException);

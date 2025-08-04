@@ -19,6 +19,9 @@ public enum ApiMessage {
     FEATURE_IN_FUTURE,
     MISSING_REFRESH_TOKEN,
     UNAUTHENTICATED,
+    INVALID_EXCHANGE_CODE,
+    LOGOUT_SUCCESS,
+    LINKED_TO_OAUTH2,
 
     // Only for logging, don't show to user & don't create message locale, or show Internal Server Error
     INVALID_FORMAT_TOKEN,
