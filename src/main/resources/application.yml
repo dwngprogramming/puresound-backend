@@ -30,12 +30,30 @@ spring:
               - email
               - profile
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: Google
+
+          facebook:
+            client-id: ${FACEBOOK_CLIENT_ID}
+            client-secret: ${FACEBOOK_CLIENT_SECRET}
+            scope:
+              - email
+              - public_profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-name: Facebook
+
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/auth
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v1/userinfo
             user-name-attribute: sub
+
+          facebook:
+            authorization-uri: https://www.facebook.com/v23.0/dialog/oauth
+            token-uri: https://graph.facebook.com/v23.0/oauth/access_token
+            user-info-uri: https://graph.facebook.com/v23.0/me?fields=email,first_name,last_name,picture
+            user-name-attribute: id
 
 springdoc:
   api-docs:
