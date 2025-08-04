@@ -10,14 +10,10 @@ import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.security.cookie.CookieService;
 import com.puresound.backend.security.jwt.JwtTokenProvider;
 import com.puresound.backend.security.jwt.UserPrincipal;
-import com.puresound.backend.security.local.LocalAuthentication;
 import com.puresound.backend.security.local.LocalAuthenticationToken;
-import com.puresound.backend.service.user.UserService;
 import com.puresound.backend.service.user.UserServiceImpl;
-import com.puresound.backend.service.user.router.UserServiceRouter;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -27,11 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
 
@@ -46,7 +38,6 @@ public class AuthApi {
     JwtTokenProvider jwtTokenProvider;
     ApiResponseFactory apiResponseFactory;
     UserServiceImpl userService;
-    UserServiceRouter userServiceRouter;
     CookieService cookieService;
 
     @PostMapping("/local/login")
@@ -84,22 +75,11 @@ public class AuthApi {
         return null;
     }
 
-    @PostMapping("/refresh-token")
-    public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(HttpServletRequest request, Locale locale) {
-        String refreshToken = cookieService.getCookie("refreshToken", request);
-        if (refreshToken == null) {
-            throw new BadRequestException(ApiMessage.MISSING_REFRESH_TOKEN, LogLevel.DEBUG);
-        }
-        Jwt jwt = jwtTokenProvider.decodeToken(refreshToken);
-        String userId = jwt.getSubject();
-        String userType = jwt.getClaimAsString("userType");
-
-        UserService userService = userServiceRouter.resolve(UserType.fromString(userType));
-        LocalAuthentication auth = userService.findById(userId);
-        UserPrincipal principal = new UserPrincipal(userId, auth.fullname(), UserType.fromString(userType), auth.roles());
-        String accessToken = jwtTokenProvider.generateAccessToken(principal);
-
-        TokenResponse tokenResponse = new TokenResponse(accessToken);
-        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGIN_SUCCESS, tokenResponse, locale));
+    @DeleteMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(Locale locale,
+                                                    HttpServletResponse response) {
+        // Set RT to cookie
+        cookieService.deleteCookie("refreshToken", response);
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGOUT_SUCCESS, locale));
     }
 }
