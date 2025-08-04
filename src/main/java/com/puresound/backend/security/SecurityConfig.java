@@ -4,6 +4,7 @@ import com.puresound.backend.constant.api.BypassSecurity;
 import com.puresound.backend.security.converters.JwtAuthenticationTokenConverter;
 import com.puresound.backend.security.jwt.JwtAuthenticationEntryPoint;
 import com.puresound.backend.security.local.LocalAuthenticationProvider;
+import com.puresound.backend.security.oauth2.CustomAuthorizationRequestResolver;
 import com.puresound.backend.security.oauth2.CustomOAuth2SuccessHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class SecurityConfig {
     LocalAuthenticationProvider localAuthenticationProvider;
     JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     CustomOAuth2SuccessHandler successHandler;
+    CustomAuthorizationRequestResolver authorizationRequestResolver;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -59,7 +61,10 @@ public class SecurityConfig {
                         )
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorize"))
+                        .authorizationEndpoint(authorization -> authorization
+                                .baseUri("/oauth2/authorize")
+                                .authorizationRequestResolver(authorizationRequestResolver)
+                        )
                         .redirectionEndpoint(redirection -> redirection.baseUri("/login/oauth2/code/*"))
                         .successHandler(successHandler)
                 )
