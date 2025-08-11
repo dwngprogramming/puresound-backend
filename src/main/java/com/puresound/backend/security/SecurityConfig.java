@@ -75,7 +75,6 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // TODO: Change to only allow the frontend in future
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
                 "https://puresound.space",

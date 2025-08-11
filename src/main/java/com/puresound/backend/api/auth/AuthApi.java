@@ -4,14 +4,16 @@ import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.constant.user.UserType;
 import com.puresound.backend.dto.ApiResponse;
-import com.puresound.backend.dto.auth.LoginRequest;
+import com.puresound.backend.dto.auth.LocalLoginRequest;
 import com.puresound.backend.dto.auth.TokenResponse;
+import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.security.cookie.CookieService;
 import com.puresound.backend.security.jwt.JwtTokenProvider;
 import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.security.local.LocalAuthenticationToken;
 import com.puresound.backend.service.user.UserServiceImpl;
+import com.puresound.backend.service.user.listener.ListenerService;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,10 +40,11 @@ public class AuthApi {
     JwtTokenProvider jwtTokenProvider;
     ApiResponseFactory apiResponseFactory;
     UserServiceImpl userService;
+    ListenerService listenerService;
     CookieService cookieService;
 
     @PostMapping("/local/login")
-    public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LoginRequest request,
+    public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LocalLoginRequest request,
                                                                     Locale locale,
                                                                     HttpServletResponse response) {
         if (!userService.isEmail(request.usernameOrEmail()) && !userService.isUsername(request.usernameOrEmail())) {
@@ -70,8 +73,19 @@ public class AuthApi {
         return null;
     }
 
-    @PostMapping("/local/staff/login")
-    public ResponseEntity<ApiResponse<TokenResponse>> staffLogin() {
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse<Void>> listenerSignup(@Valid @RequestBody ListenerRegisterRequest request, Locale locale) {
+        listenerService.register(request);
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.SIGNUP_SUCCESS, locale));
+    }
+
+    @PostMapping("/signup/artist")
+    public ResponseEntity<ApiResponse<Void>> artistSignup() {
+        return null;
+    }
+
+    @PostMapping("/signup/staff")
+    public ResponseEntity<ApiResponse<Void>> staffSignup() {
         return null;
     }
 

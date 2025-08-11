@@ -6,6 +6,7 @@ import com.puresound.backend.constant.user.OAuth2Type;
 import com.puresound.backend.dto.auth.OAuth2ProviderRequest;
 import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
+import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.entity.user.listener.Listener;
 import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.mapper.listener.ListenerMapper;
@@ -24,8 +25,7 @@ import org.springframework.stereotype.Service;
 public class ListenerServiceImpl implements ListenerService {
     ListenerRepository listenerRepository;
     ListenerMapper listenerMapper;
-    OAuth2ProviderService oauth2ProviderService;
-    private final OAuth2ProviderService oAuth2ProviderService;
+    OAuth2ProviderService oAuth2ProviderService;
 
     @Override
     public LocalAuthentication findByUsernameOrEmail(String usernameOrEmail) {
@@ -65,6 +65,11 @@ public class ListenerServiceImpl implements ListenerService {
     }
 
     @Override
+    public boolean isUsernameExists(String username) {
+        return listenerRepository.existsByUsername(username);
+    }
+
+    @Override
     public OAuth2Authentication findOAuth2ByEmail(String email) {
         Listener listener = listenerRepository.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
@@ -95,7 +100,25 @@ public class ListenerServiceImpl implements ListenerService {
         if (oAuth2ProviderService.wasUnlinkedBefore(request)) {
             oAuth2ProviderService.link(request);
         } else {
-            oauth2ProviderService.save(request);
+            oAuth2ProviderService.save(request);
         }
+    }
+
+    @Override
+    public void register(ListenerRegisterRequest request) {
+        if (isEmailExists(request.email())) {
+            throw new BadRequestException(ApiMessage.EMAIL_EXISTS, LogLevel.INFO);
+        }
+
+        if (isUsernameExists(request.username())) {
+            throw new BadRequestException(ApiMessage.USERNAME_EXISTS, LogLevel.INFO);
+        }
+
+        if (!request.isValidRetypePassword()) {
+            throw new BadRequestException(ApiMessage.RETYPE_PASSWORD_NOT_MATCH, LogLevel.INFO);
+        }
+
+        Listener listener = listenerMapper.toListener(request);
+        listenerRepository.save(listener);
     }
 }

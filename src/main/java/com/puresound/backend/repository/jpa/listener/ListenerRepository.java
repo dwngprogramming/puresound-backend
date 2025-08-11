@@ -13,5 +13,7 @@ public interface ListenerRepository extends JpaRepository<Listener, String> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByUsername(String username);
+
     Optional<Listener> findByEmail(String email);
 }

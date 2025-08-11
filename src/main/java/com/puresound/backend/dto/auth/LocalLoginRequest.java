@@ -3,8 +3,8 @@ package com.puresound.backend.dto.auth;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-public record LoginRequest(
-        @NotBlank(message = "{USERNAME_NOT_BLANK}")
+public record LocalLoginRequest(
+        @NotBlank(message = "{USERNAME_OR_EMAIL_NOT_BLANK}")
         String usernameOrEmail,
 
         @NotBlank(message = "{PASSWORD_NOT_BLANK}")
