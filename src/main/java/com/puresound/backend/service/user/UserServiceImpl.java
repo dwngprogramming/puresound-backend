@@ -25,14 +25,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LocalAuthentication findByUsernameOrEmail(String usernameOrEmail) {
-        log.warn("Not implemented method findByUsernameOrEmail in UserServiceImpl");
+    public LocalAuthentication loginByUsernameOrEmail(String usernameOrEmail) {
+        log.warn("Not implemented method loginByUsernameOrEmail in UserServiceImpl");
         throw new UnsupportedOperationException("Not implemented this method in UserServiceImpl");
     }
 
     @Override
     public RefreshAuthentication findToRefreshById(String id) {
         log.warn("Not implemented method findById in UserServiceImpl");
+        throw new UnsupportedOperationException("Not implemented this method in UserServiceImpl");
+    }
+
+    @Override
+    public void activateAccount(String email) {
+        log.warn("Not implemented method activateAccount in UserServiceImpl");
         throw new UnsupportedOperationException("Not implemented this method in UserServiceImpl");
     }
 }

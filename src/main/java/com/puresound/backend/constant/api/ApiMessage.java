@@ -5,8 +5,12 @@ public enum ApiMessage {
     GET_LISTENER_SUCCESS,
     LOGIN_SUCCESS,
     SIGNUP_SUCCESS,
+    NEW_EMAIL,
+    OTP_SEND_SUCCESS,
+    OTP_VERIFICATION_SUCCESS,
 
     // Fail + Logging
+    LOCKED_ACCOUNT,
     EMAIL_EXISTS,
     USERNAME_EXISTS,
     INVALID_REQUEST,
@@ -25,6 +29,7 @@ public enum ApiMessage {
     LOGOUT_SUCCESS,
     LINKED_TO_OAUTH2,
     RETYPE_PASSWORD_NOT_MATCH,
+    OTP_INVALID,
 
     // Only for logging, don't show to user & don't create message locale, or show Internal Server Error
     INVALID_FORMAT_TOKEN, INVALID_OAUTH2_PROVIDER

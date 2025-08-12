@@ -1,5 +1,6 @@
 package com.puresound.backend.service.user.listener;
 
+import com.puresound.backend.constant.Status;
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.constant.user.OAuth2Type;
@@ -13,10 +14,14 @@ import com.puresound.backend.mapper.listener.ListenerMapper;
 import com.puresound.backend.repository.jpa.listener.ListenerRepository;
 import com.puresound.backend.security.local.LocalAuthentication;
 import com.puresound.backend.security.oauth2.OAuth2Authentication;
+import com.puresound.backend.service.email.EmailService;
+import com.puresound.backend.service.otp.OtpService;
 import com.puresound.backend.service.user.oauth2.OAuth2ProviderService;
+import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -26,11 +31,20 @@ public class ListenerServiceImpl implements ListenerService {
     ListenerRepository listenerRepository;
     ListenerMapper listenerMapper;
     OAuth2ProviderService oAuth2ProviderService;
+    OtpService otpService;
+    EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public LocalAuthentication findByUsernameOrEmail(String usernameOrEmail) {
-        Listener listener = listenerRepository.findByUsernameOrEmail(usernameOrEmail)
+    public LocalAuthentication loginByUsernameOrEmail(String usernameOrEmail) {
+        if (listenerRepository.isLockedAccount(usernameOrEmail)) {
+            throw new BadRequestException(ApiMessage.LOCKED_ACCOUNT, LogLevel.WARN);
+        }
+
+        Listener listener = listenerRepository.loginByUsernameOrEmail(usernameOrEmail)
                 .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
+
+        // Không bị locked thì trả về listener
         return listenerMapper.toLocalAuthentication(listener);
     }
 
@@ -39,6 +53,17 @@ public class ListenerServiceImpl implements ListenerService {
         Listener listener = listenerRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
         return listenerMapper.toRefreshAuthentication(listener);
+    }
+
+    @Override
+    public void activateAccount(String email) {
+        listenerRepository.findByEmail(email)
+                .ifPresentOrElse(listener -> {
+                    listener.setStatus(Status.ACTIVE);
+                    listenerRepository.save(listener);
+                }, () -> {
+                    throw new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO);
+                });
     }
 
     @Override
@@ -105,7 +130,7 @@ public class ListenerServiceImpl implements ListenerService {
     }
 
     @Override
-    public void register(ListenerRegisterRequest request) {
+    public void registerAndSendOtp(ListenerRegisterRequest request) throws MessagingException {
         if (isEmailExists(request.email())) {
             throw new BadRequestException(ApiMessage.EMAIL_EXISTS, LogLevel.INFO);
         }
@@ -119,6 +144,19 @@ public class ListenerServiceImpl implements ListenerService {
         }
 
         Listener listener = listenerMapper.toListener(request);
+        // Set status to "LOCKED"
+        listener.setStatus(Status.LOCKED);
+        listener.setPassword(passwordEncoder.encode(request.password()));
         listenerRepository.save(listener);
+
+        // Send OTP
+        String otp = otpService.generateSignUpOtp(request.email());
+        emailService.sendOtp(request.email(), otp, 5);
+    }
+
+    @Override
+    public void resendSignUpOtp(String email) throws MessagingException {
+        String otp = otpService.generateSignUpOtp(email);
+        emailService.sendOtp(email, otp, 5);
     }
 }

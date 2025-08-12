@@ -32,7 +32,7 @@ public class LocalAuthenticationProvider implements AuthenticationProvider {
         LocalAuthenticationToken token = (LocalAuthenticationToken) authentication;
 
         UserService userService = router.resolve(token.getUserType());
-        LocalAuthentication authInfo = userService.findByUsernameOrEmail(token.getUsernameOrEmail());
+        LocalAuthentication authInfo = userService.loginByUsernameOrEmail(token.getUsernameOrEmail());
 
         if (!passwordEncoder.matches(token.getPassword(), authInfo.password())) {
             throw new BadRequestException(ApiMessage.LOGIN_WRONG_INFO, LogLevel.INFO);

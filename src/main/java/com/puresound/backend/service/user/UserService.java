@@ -4,6 +4,7 @@ import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.security.local.LocalAuthentication;
 
 public interface UserService {
-    LocalAuthentication findByUsernameOrEmail(String usernameOrEmail);
+    LocalAuthentication loginByUsernameOrEmail(String usernameOrEmail);
     RefreshAuthentication findToRefreshById(String id);
+    void activateAccount(String email);
 }

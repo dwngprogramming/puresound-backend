@@ -38,3 +38,7 @@ listener:
 
 artist:
   callback-url: ${ARTIST_CALLBACK_SUCCESS_URL}
+
+otp:
+  signup:
+    exp-min: ${OTP_SIGNUP_EXP_MIN}
