@@ -33,6 +33,7 @@ public class LocalAuthenticationProvider implements AuthenticationProvider {
 
         UserService userService = router.resolve(token.getUserType());
         LocalAuthentication authInfo = userService.loginByUsernameOrEmail(token.getUsernameOrEmail());
+        String email = userService.findEmailById(authInfo.id());
 
         if (!passwordEncoder.matches(token.getPassword(), authInfo.password())) {
             throw new BadRequestException(ApiMessage.LOGIN_WRONG_INFO, LogLevel.INFO);
@@ -42,7 +43,7 @@ public class LocalAuthenticationProvider implements AuthenticationProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        UserPrincipal principal = new UserPrincipal(authInfo.id(), authInfo.fullname(), authInfo.userType(), authInfo.roles());
+        UserPrincipal principal = new UserPrincipal(authInfo.id(), email, authInfo.fullname(), authInfo.userType(), authInfo.roles());
 
         return new LocalAuthenticationToken(principal, authorities);
     }

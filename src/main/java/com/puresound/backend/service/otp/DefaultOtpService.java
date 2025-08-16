@@ -1,6 +1,6 @@
 package com.puresound.backend.service.otp;
 
-import com.puresound.backend.dto.otp.OtpEmailRequest;
+import com.puresound.backend.dto.otp.VerifyOtpEmailRequest;
 import com.puresound.backend.util.OtpUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class DefaultOtpService implements OtpService {
     }
 
     @Override
-    public boolean verifySignUpOtp(OtpEmailRequest request) {
+    public boolean verifySignUpOtp(VerifyOtpEmailRequest request) {
         String key = OTP_SIGNUP_PREFIX + request.email();
         String storedOtp = (String) redisTemplate.opsForValue().get(key);
         if (storedOtp != null && storedOtp.equals(request.otp())) {

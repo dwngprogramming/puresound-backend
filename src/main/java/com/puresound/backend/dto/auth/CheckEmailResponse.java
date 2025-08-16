@@ -1,4 +1,4 @@
-package com.puresound.backend.dto.listener;
+package com.puresound.backend.dto.auth;
 
 public record CheckEmailResponse(boolean exists) {
 }

@@ -1,22 +1,21 @@
 package com.puresound.backend.api.auth;
 
+import com.puresound.backend.config.audit.UnauthenticatedAuditor;
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.constant.user.UserType;
 import com.puresound.backend.dto.ApiResponse;
-import com.puresound.backend.dto.auth.LocalLoginRequest;
-import com.puresound.backend.dto.auth.TokenResponse;
-import com.puresound.backend.dto.listener.CheckEmailRequest;
-import com.puresound.backend.dto.listener.CheckEmailResponse;
+import com.puresound.backend.dto.auth.*;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
-import com.puresound.backend.dto.otp.OtpEmailRequest;
+import com.puresound.backend.dto.otp.SendOtpEmailRequest;
+import com.puresound.backend.dto.otp.VerifyOtpEmailRequest;
 import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.security.cookie.CookieService;
 import com.puresound.backend.security.jwt.JwtTokenProvider;
 import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.security.local.LocalAuthenticationToken;
 import com.puresound.backend.service.otp.OtpService;
-import com.puresound.backend.service.user.UserServiceImpl;
+import com.puresound.backend.service.user.CommonUserService;
 import com.puresound.backend.service.user.listener.ListenerService;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +32,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,7 +43,7 @@ public class AuthApi {
     AuthenticationManager authenticationManager;
     JwtTokenProvider jwtTokenProvider;
     ApiResponseFactory apiResponseFactory;
-    UserServiceImpl userService;
+    CommonUserService commonUserService;
     ListenerService listenerService;
     CookieService cookieService;
     OtpService otpService;
@@ -54,7 +52,7 @@ public class AuthApi {
     public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LocalLoginRequest request,
                                                                     Locale locale,
                                                                     HttpServletResponse response) {
-        if (!userService.isEmail(request.usernameOrEmail()) && !userService.isUsername(request.usernameOrEmail())) {
+        if (!commonUserService.isEmail(request.usernameOrEmail()) && !commonUserService.isUsername(request.usernameOrEmail())) {
             throw new BadRequestException(ApiMessage.INVALID_UOE_FORMAT, LogLevel.INFO);
         }
 
@@ -96,7 +94,7 @@ public class AuthApi {
         return null;
     }
 
-    @PostMapping("/listener/check-email")
+    @PostMapping("/check-email")
     public ResponseEntity<ApiResponse<CheckEmailResponse>> checkEmailExists(@Valid @RequestBody CheckEmailRequest request, Locale locale) {
         boolean result = listenerService.isEmailExists(request.email());
         CheckEmailResponse checkEmailResponse = new CheckEmailResponse(result);
@@ -106,21 +104,29 @@ public class AuthApi {
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.NEW_EMAIL, checkEmailResponse, locale));
     }
 
-    @PostMapping("/signup/otp/resend")
-    public ResponseEntity<ApiResponse<Void>> resendOtp(@Valid @RequestBody Map<String, String> request, Locale locale) throws MessagingException {
-        String email = request.get("email");
+    @PostMapping("/otp/send")
+    public ResponseEntity<ApiResponse<Void>> sendOtp(@Valid @RequestBody SendOtpEmailRequest request, Locale locale) throws MessagingException {
+        String email = request.email();
         listenerService.resendSignUpOtp(email);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.OTP_SEND_SUCCESS, locale));
     }
 
-    @PostMapping("/signup/otp/verify")
-    public ResponseEntity<ApiResponse<Void>> verifyOtp(@Valid @RequestBody OtpEmailRequest request, Locale locale) {
+    @PostMapping("/otp/verify")
+    public ResponseEntity<ApiResponse<Void>> verifyOtp(@Valid @RequestBody VerifyOtpEmailRequest request, Locale locale) {
         boolean isValidOtp = otpService.verifySignUpOtp(request);
         if (!isValidOtp) {
             throw new BadRequestException(ApiMessage.OTP_INVALID, LogLevel.INFO);
         }
         listenerService.activateAccount(request.email());
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.OTP_VERIFICATION_SUCCESS, locale));
+    }
+
+    @PatchMapping("/change-password")
+    @UnauthenticatedAuditor(email = "#request.email()")
+    public ResponseEntity<ApiResponse<Void>> changePassword(@Valid @RequestBody ResetPasswordRequest request,
+                                                            Locale locale) {
+        listenerService.resetPassword(request);
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CHANGE_EMAIL_SUCCESS, locale));
     }
 
     @DeleteMapping("/logout")

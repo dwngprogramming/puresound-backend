@@ -6,6 +6,7 @@ import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.constant.user.OAuth2Type;
 import com.puresound.backend.dto.auth.OAuth2ProviderRequest;
 import com.puresound.backend.dto.auth.RefreshAuthentication;
+import com.puresound.backend.dto.auth.ResetPasswordRequest;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.entity.user.listener.Listener;
@@ -23,6 +24,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -64,6 +68,34 @@ public class ListenerServiceImpl implements ListenerService {
                 }, () -> {
                     throw new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO);
                 });
+    }
+
+    @Transactional
+    @Override
+    public void resetPassword(ResetPasswordRequest request) {
+        if (isEmailExists(request.email())) {
+            throw new BadRequestException(ApiMessage.EMAIL_EXISTS, LogLevel.INFO);
+        }
+
+        if (!request.isValidRetypePassword()) {
+            throw new BadRequestException(ApiMessage.RETYPE_PASSWORD_NOT_MATCH, LogLevel.INFO);
+        }
+
+        String encodedPassword = passwordEncoder.encode(request.newPassword());
+        listenerRepository.resetPassword(request.email(), encodedPassword);
+    }
+
+    @Override
+    public String findEmailById(String userId) {
+        return listenerRepository.findById(userId)
+                .map(Listener::getEmail)
+                .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
+    }
+
+    @Transactional
+    @Override
+    public void updateLastLogin(String id) {
+        listenerRepository.updateLastLoginAt(id, LocalDateTime.now());
     }
 
     @Override

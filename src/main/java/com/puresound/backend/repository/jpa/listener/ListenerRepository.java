@@ -2,9 +2,11 @@ package com.puresound.backend.repository.jpa.listener;
 
 import com.puresound.backend.entity.user.listener.Listener;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ListenerRepository extends JpaRepository<Listener, String> {
@@ -27,4 +29,20 @@ public interface ListenerRepository extends JpaRepository<Listener, String> {
     boolean existsByUsername(String username);
 
     Optional<Listener> findByEmail(String email);
+
+    @Modifying
+    @Query("""
+            UPDATE Listener l
+            SET l.password = :encodedPassword, l.updatedBy = :email, l.updatedAt = CURRENT_TIMESTAMP
+            WHERE l.email = :email
+            """)
+    void resetPassword(String email, String encodedPassword);
+
+    @Modifying
+    @Query("""
+            UPDATE Listener l
+            SET l.lastLoginAt = :lastLoginAt
+            WHERE l.id = :id
+            """)
+    void updateLastLoginAt(String id, LocalDateTime lastLoginAt);
 }

@@ -24,9 +24,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -35,10 +38,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -49,6 +49,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     final CookieService cookieService;
     final TokenExchangeService tokenExchangeService;
     final MessageSource messageSource;
+    final ApplicationEventPublisher eventPublisher;
 
     @Value("${listener.callback-url}")
     String listenerCallbackUrl;
@@ -116,7 +117,23 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         }
 
         // Generate refresh token (Cookie) & Exchange code (Query param)
-        UserPrincipal principal = new UserPrincipal(userId, fullname, UserType.fromString(userType), List.of());
+        UserPrincipal principal = new UserPrincipal(userId, email, fullname, UserType.fromString(userType), List.of());
+
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        principal.authorities().forEach(authority ->
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + userType.toUpperCase()))
+        );
+
+        // Publish authentication success event
+        // This is used to update last login time in UserService
+        CustomOAuth2AuthenticationToken newToken = new CustomOAuth2AuthenticationToken(
+                principal,
+                authorities,
+                providerType,
+                token.getAuthorizedClientRegistrationId()
+        );
+        eventPublisher.publishEvent(new AuthenticationSuccessEvent(newToken));
+
         String refreshToken = tokenProvider.generateRefreshToken(principal);
         long maxAgeSeconds = tokenProvider.getExpRtMin() * 60;
         String exchangeCode = UlidCreator.getMonotonicUlid().toString();
