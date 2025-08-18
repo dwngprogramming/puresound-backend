@@ -1,12 +1,11 @@
 package com.puresound.backend.config;
 
+import com.puresound.backend.config.audit.DefaultAuditorAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-import java.util.Optional;
 
 @Configuration
 @EnableJpaRepositories(basePackages = "com.puresound.backend")
@@ -14,7 +13,6 @@ import java.util.Optional;
 public class JpaConfig {
     @Bean
     public AuditorAware<String> auditorProvider() {
-        // Temporary set to "Admin"
-        return () -> Optional.of("Admin");
+        return new DefaultAuditorAware();
     }
 }

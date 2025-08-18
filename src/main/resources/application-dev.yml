@@ -13,6 +13,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+        jdbc:
+          time_zone: UTC
 
   data:
     redis:
@@ -38,3 +40,7 @@ listener:
 
 artist:
   callback-url: ${ARTIST_CALLBACK_SUCCESS_URL}
+
+otp:
+  signup:
+    exp-min: ${OTP_SIGNUP_EXP_MIN}
