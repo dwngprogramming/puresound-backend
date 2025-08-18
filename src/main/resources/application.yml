@@ -55,6 +55,19 @@ spring:
             user-info-uri: https://graph.facebook.com/v23.0/me?fields=email,first_name,last_name,picture
             user-name-attribute: id
 
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
+
 springdoc:
   api-docs:
     enabled: true

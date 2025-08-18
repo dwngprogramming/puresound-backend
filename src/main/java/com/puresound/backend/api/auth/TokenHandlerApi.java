@@ -58,7 +58,8 @@ public class TokenHandlerApi {
 
         UserService userService = userServiceRouter.resolve(UserType.fromString(userType));
         RefreshAuthentication auth = userService.findToRefreshById(userId);
-        UserPrincipal principal = new UserPrincipal(userId, auth.fullname(), UserType.fromString(userType), auth.roles());
+        String email = userService.findEmailById(userId);
+        UserPrincipal principal = new UserPrincipal(userId, email, auth.fullname(), UserType.fromString(userType), auth.roles());
         String accessToken = jwtTokenProvider.generateAccessToken(principal);
 
         TokenResponse tokenResponse = new TokenResponse(accessToken);
@@ -82,7 +83,8 @@ public class TokenHandlerApi {
 
         UserService userService = userServiceRouter.resolve(userType);
         RefreshAuthentication auth = userService.findToRefreshById(userId);
-        UserPrincipal principal = new UserPrincipal(userId, auth.fullname(), userType, auth.roles());
+        String email = userService.findEmailById(userId);
+        UserPrincipal principal = new UserPrincipal(userId, email, auth.fullname(), userType, auth.roles());
         String accessToken = jwtTokenProvider.generateAccessToken(principal);
         TokenResponse tokenResponse = new TokenResponse(accessToken);
 

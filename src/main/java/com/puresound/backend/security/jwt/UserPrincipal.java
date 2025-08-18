@@ -6,6 +6,7 @@ import java.util.List;
 
 public record UserPrincipal(
         String id,
+        String email,
         String fullname,
         UserType userType,
         List<String> authorities
