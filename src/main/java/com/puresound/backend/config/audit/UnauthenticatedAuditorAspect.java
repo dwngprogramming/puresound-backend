@@ -28,9 +28,6 @@ public class UnauthenticatedAuditorAspect {
             auditorEmail = resolveEmail(joinPoint, unauthenticatedAuditor);
             UnauthenticatedAuditorContextHolder.setCurrentAuditor(auditorEmail);
             return joinPoint.proceed();
-        } catch (Exception e) {
-            log.error("Error during unauthenticated auditor handling: {}", e.getMessage(), e);
-            throw e;
         } finally {
             log.debug("Clearing auditor context for email: {}", auditorEmail);
             UnauthenticatedAuditorContextHolder.clear();

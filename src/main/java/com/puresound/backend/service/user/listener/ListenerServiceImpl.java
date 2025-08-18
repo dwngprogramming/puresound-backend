@@ -9,6 +9,7 @@ import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.auth.ResetPasswordRequest;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
+import com.puresound.backend.dto.listener.ListenerResponse;
 import com.puresound.backend.entity.user.listener.Listener;
 import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.mapper.listener.ListenerMapper;
@@ -25,8 +26,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -73,8 +72,8 @@ public class ListenerServiceImpl implements ListenerService {
     @Transactional
     @Override
     public void resetPassword(ResetPasswordRequest request) {
-        if (isEmailExists(request.email())) {
-            throw new BadRequestException(ApiMessage.EMAIL_EXISTS, LogLevel.INFO);
+        if (!isEmailExists(request.email())) {
+            throw new BadRequestException(ApiMessage.EMAIL_NOT_EXISTS, LogLevel.INFO);
         }
 
         if (!request.isValidRetypePassword()) {
@@ -95,7 +94,7 @@ public class ListenerServiceImpl implements ListenerService {
     @Transactional
     @Override
     public void updateLastLogin(String id) {
-        listenerRepository.updateLastLoginAt(id, LocalDateTime.now());
+        listenerRepository.updateLastLoginAt(id);
     }
 
     @Override
@@ -182,13 +181,20 @@ public class ListenerServiceImpl implements ListenerService {
         listenerRepository.save(listener);
 
         // Send OTP
-        String otp = otpService.generateSignUpOtp(request.email());
+        String otp = otpService.generateCommonOtp(request.email());
         emailService.sendOtp(request.email(), otp, 5);
     }
 
     @Override
-    public void resendSignUpOtp(String email) throws MessagingException {
-        String otp = otpService.generateSignUpOtp(email);
+    public ListenerResponse getById(String id) {
+        Listener listener = listenerRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(ApiMessage.LISTENER_NOT_FOUND, LogLevel.INFO));
+        return listenerMapper.toListenerResponse(listener);
+    }
+
+    @Override
+    public void resendCommonOtp(String email) throws MessagingException {
+        String otp = otpService.generateCommonOtp(email);
         emailService.sendOtp(email, otp, 5);
     }
 }

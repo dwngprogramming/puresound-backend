@@ -107,13 +107,13 @@ public class AuthApi {
     @PostMapping("/otp/send")
     public ResponseEntity<ApiResponse<Void>> sendOtp(@Valid @RequestBody SendOtpEmailRequest request, Locale locale) throws MessagingException {
         String email = request.email();
-        listenerService.resendSignUpOtp(email);
+        listenerService.resendCommonOtp(email);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.OTP_SEND_SUCCESS, locale));
     }
 
     @PostMapping("/otp/verify")
     public ResponseEntity<ApiResponse<Void>> verifyOtp(@Valid @RequestBody VerifyOtpEmailRequest request, Locale locale) {
-        boolean isValidOtp = otpService.verifySignUpOtp(request);
+        boolean isValidOtp = otpService.verifyCommonOtp(request);
         if (!isValidOtp) {
             throw new BadRequestException(ApiMessage.OTP_INVALID, LogLevel.INFO);
         }
@@ -121,12 +121,12 @@ public class AuthApi {
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.OTP_VERIFICATION_SUCCESS, locale));
     }
 
-    @PatchMapping("/change-password")
+    @PatchMapping("/reset-password")
     @UnauthenticatedAuditor(email = "#request.email()")
     public ResponseEntity<ApiResponse<Void>> changePassword(@Valid @RequestBody ResetPasswordRequest request,
                                                             Locale locale) {
         listenerService.resetPassword(request);
-        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CHANGE_EMAIL_SUCCESS, locale));
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CHANGE_PASSWORD_SUCCESS, locale));
     }
 
     @DeleteMapping("/logout")

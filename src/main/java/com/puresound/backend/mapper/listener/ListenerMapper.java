@@ -3,6 +3,7 @@ package com.puresound.backend.mapper.listener;
 import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
+import com.puresound.backend.dto.listener.ListenerResponse;
 import com.puresound.backend.entity.user.listener.Listener;
 import com.puresound.backend.mapper.GlobalMapperConfig;
 import com.puresound.backend.security.local.LocalAuthentication;
@@ -22,4 +23,6 @@ public interface ListenerMapper {
     RefreshAuthentication toRefreshAuthentication(Listener listener);
 
     Listener toListener(ListenerRegisterRequest request);
+
+    ListenerResponse toListenerResponse(Listener listener);
 }

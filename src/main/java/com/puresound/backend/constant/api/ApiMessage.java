@@ -9,7 +9,7 @@ public enum ApiMessage {
     OTP_SEND_SUCCESS,
     OTP_VERIFICATION_SUCCESS,
     EMAIL_VALID,
-    CHANGE_EMAIL_SUCCESS,
+    CHANGE_PASSWORD_SUCCESS,
 
     // Fail + Logging
     LOCKED_ACCOUNT,

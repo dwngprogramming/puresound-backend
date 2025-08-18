@@ -7,8 +7,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "listeners")
@@ -48,6 +48,6 @@ public class Listener extends Base {
     @Column
     String avatar;
 
-    @Column(name = "last_login_at")
-    LocalDateTime lastLoginAt;
+    @Column(name = "last_login_at", columnDefinition = "DATETIME(6)")
+    Instant lastLoginAt;
 }

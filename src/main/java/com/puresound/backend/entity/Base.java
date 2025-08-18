@@ -12,9 +12,10 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Objects;
 
+// All timestamps (Instant) are in UTC
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -35,23 +36,23 @@ public abstract class Base {
     Status status = Status.ACTIVE;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    LocalDateTime createdAt;
+    @Column(name = "created_at", columnDefinition = "DATETIME(6)", nullable = false, updatable = false)
+    Instant createdAt;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false, length = 100)
     String createdBy;
 
     @LastModifiedDate
-    @Column(name = "updated_at")
-    LocalDateTime updatedAt;
+    @Column(name = "updated_at", columnDefinition = "DATETIME(6)")
+    Instant updatedAt;
 
     @LastModifiedBy
     @Column(name = "updated_by", length = 100)
     String updatedBy;
 
     @Column(name = "deleted_at")
-    LocalDateTime deletedAt;        // null when not deleted
+    Instant deletedAt;        // null when not deleted
 
     @PrePersist
     public void generateUlid() {

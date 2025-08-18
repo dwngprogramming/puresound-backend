@@ -3,6 +3,7 @@ package com.puresound.backend.service.user;
 import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.auth.ResetPasswordRequest;
 import com.puresound.backend.security.local.LocalAuthentication;
+import jakarta.mail.MessagingException;
 
 public interface UserService {
     LocalAuthentication loginByUsernameOrEmail(String usernameOrEmail);
@@ -14,6 +15,8 @@ public interface UserService {
     void resetPassword(ResetPasswordRequest request);
 
     String findEmailById(String userId);
+
+    void resendCommonOtp(String email) throws MessagingException;
 
     void updateLastLogin(String id);
 }

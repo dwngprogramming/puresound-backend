@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ListenerRepository extends JpaRepository<Listener, String> {
@@ -41,8 +40,8 @@ public interface ListenerRepository extends JpaRepository<Listener, String> {
     @Modifying
     @Query("""
             UPDATE Listener l
-            SET l.lastLoginAt = :lastLoginAt
+            SET l.lastLoginAt = CURRENT_TIMESTAMP
             WHERE l.id = :id
             """)
-    void updateLastLoginAt(String id, LocalDateTime lastLoginAt);
+    void updateLastLoginAt(String id);
 }

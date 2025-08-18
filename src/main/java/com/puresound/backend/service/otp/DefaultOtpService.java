@@ -16,21 +16,21 @@ import java.time.Duration;
 @Service
 public class DefaultOtpService implements OtpService {
     final RedisTemplate<String, Object> redisTemplate;
-    static final String OTP_SIGNUP_PREFIX = "OTP:SIGNUP_";
+    static final String COMMON_OTP_PREFIX = "OTP:COMMON_";
     @Value("${otp.signup.exp-min}")
     long signupExp;
 
     @Override
-    public String generateSignUpOtp(String email) {
-        String key = OTP_SIGNUP_PREFIX + email;
+    public String generateCommonOtp(String email) {
+        String key = COMMON_OTP_PREFIX + email;
         String otp = OtpUtil.generateOtp(6);
         redisTemplate.opsForValue().set(key, otp, Duration.ofMinutes(signupExp));
         return otp;
     }
 
     @Override
-    public boolean verifySignUpOtp(VerifyOtpEmailRequest request) {
-        String key = OTP_SIGNUP_PREFIX + request.email();
+    public boolean verifyCommonOtp(VerifyOtpEmailRequest request) {
+        String key = COMMON_OTP_PREFIX + request.email();
         String storedOtp = (String) redisTemplate.opsForValue().get(key);
         if (storedOtp != null && storedOtp.equals(request.otp())) {
             redisTemplate.delete(key);

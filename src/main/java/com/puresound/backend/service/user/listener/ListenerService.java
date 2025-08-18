@@ -3,6 +3,7 @@ package com.puresound.backend.service.user.listener;
 import com.puresound.backend.constant.user.OAuth2Type;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
+import com.puresound.backend.dto.listener.ListenerResponse;
 import com.puresound.backend.security.oauth2.OAuth2Authentication;
 import com.puresound.backend.service.user.UserService;
 import jakarta.mail.MessagingException;
@@ -26,5 +27,5 @@ public interface ListenerService extends UserService {
 
     void registerAndSendOtp(ListenerRegisterRequest request) throws MessagingException;
 
-    void resendSignUpOtp(String email) throws MessagingException;
+    ListenerResponse getById(String id);
 }
