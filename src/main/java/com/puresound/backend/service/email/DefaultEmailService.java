@@ -22,9 +22,9 @@ public class DefaultEmailService implements EmailService {
         String htmlTemplate = getOtpTemplate(otp, expMins);
 
         helper.setTo(to);
-        helper.setSubject("Your OTP Code");
+        helper.setSubject("PureSound - Mã xác thực: " + otp);
         helper.setText(htmlTemplate, true);
-        helper.setFrom("PureSound - Pure Music Essence <dddhandicraft.contact@gmail.com>");
+        helper.setFrom("PureSound <dddhandicraft.contact@gmail.com>");
 
         javaMailSender.send(message);
     }
@@ -35,7 +35,7 @@ public class DefaultEmailService implements EmailService {
                 <html>
                 <head>
                   <meta charset="UTF-8">
-                  <title>Your OTP Code</title>
+                  <title>PureSound - Mã xác thực của bạn</title>
                   <style>
                     body {
                       font-family: Arial, sans-serif;
@@ -139,32 +139,32 @@ public class DefaultEmailService implements EmailService {
                   <div class="container">
                     <div class="header">
                       <img src="https://drive.usercontent.google.com/download?id=1LK0VI5M2ScDOO8jmBXVuxugtEdJpmSOl&export=view&authuser=0" alt="PureSound Logo" class="logo">
-                      <h2>Email Verification</h2>
+                      <h2>Xác thực Email</h2>
                     </div>
                 
                     <div class="content">
                       <div class="greeting">
-                        <p>Hello my valued customer,</p>
-                        <p>We received a request to verify your email address. Please use the verification code below to complete the process.</p>
+                        <p>Xin chào quý khách hàng,</p>
+                        <p>Chúng tôi đã nhận được yêu cầu xác thực của bạn. Vui lòng sử dụng mã xác thực bên dưới để hoàn tất quá trình này.</p>
                       </div>
                 
                       <div class="otp-section">
-                        <div class="otp-label">Your Verification Code</div>
+                        <div class="otp-label">Mã xác thực của bạn</div>
                         <div class="otp-code">{OTP_CODE}</div>
                       </div>
                 
                       <div class="warning">
-                        <p><strong>Important:</strong> This code will expire in <strong>{EXP_MINUTES} minutes</strong>. Please use it immediately to verify your account.</p>
+                        <p><strong>Quan trọng:</strong> Mã này sẽ hết hạn sau <strong>{EXP_MINUTES} phút</strong>. Vui lòng sử dụng ngay để xác thực tài khoản của bạn.</p>
                       </div>
                 
                       <div class="security-note">
-                        If you didn't request this verification, please ignore this email or contact our support team.
+                        Nếu bạn không yêu cầu xác thực này, vui lòng bỏ qua email này hoặc liên hệ với đội ngũ hỗ trợ của chúng tôi.
                       </div>
                     </div>
                 
                     <div class="footer">
-                      <p>&copy; 2025 <strong>PureSound</strong>. All rights reserved.</p>
-                      <p>Need help? <a href="mailto:support@puresound.com">Contact Support</a></p>
+                      <p>&copy; 2025 <strong>PureSound</strong>. Tất cả quyền được bảo lưu.</p>
+                      <p>Cần hỗ trợ? <a href="mailto:dddhandicraft.contact@gmail.com">Liên hệ hỗ trợ</a></p>
                     </div>
                   </div>
                 </body>

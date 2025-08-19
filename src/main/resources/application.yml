@@ -9,7 +9,7 @@ spring:
     name: puresound-backend
 
   profiles:
-    active: dev
+    active: test
 
   messages:
     basename: i18n/messages
