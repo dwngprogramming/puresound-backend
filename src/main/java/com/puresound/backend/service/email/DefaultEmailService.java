@@ -24,7 +24,7 @@ public class DefaultEmailService implements EmailService {
         helper.setTo(to);
         helper.setSubject("PureSound - Mã xác thực: " + otp);
         helper.setText(htmlTemplate, true);
-        helper.setFrom("PureSound <dddhandicraft.contact@gmail.com>");
+        helper.setFrom("PureSound <no-reply@puresound.space>");
 
         javaMailSender.send(message);
     }
@@ -164,7 +164,7 @@ public class DefaultEmailService implements EmailService {
                 
                     <div class="footer">
                       <p>&copy; 2025 <strong>PureSound</strong>. Tất cả quyền được bảo lưu.</p>
-                      <p>Cần hỗ trợ? <a href="mailto:dddhandicraft.contact@gmail.com">Liên hệ hỗ trợ</a></p>
+                      <p>Cần hỗ trợ? <a href="mailto:support@puresound.space">Liên hệ hỗ trợ</a></p>
                     </div>
                   </div>
                 </body>

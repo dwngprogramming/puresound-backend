@@ -10,10 +10,10 @@ import com.puresound.backend.dto.auth.ResetPasswordRequest;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.dto.listener.ListenerResponse;
-import com.puresound.backend.entity.user.listener.Listener;
+import com.puresound.backend.repository.entity.user.listener.Listener;
 import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.mapper.listener.ListenerMapper;
-import com.puresound.backend.repository.jpa.listener.ListenerRepository;
+import com.puresound.backend.repository.listener.ListenerRepository;
 import com.puresound.backend.security.local.LocalAuthentication;
 import com.puresound.backend.security.oauth2.OAuth2Authentication;
 import com.puresound.backend.service.email.EmailService;
@@ -23,10 +23,12 @@ import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Service("LISTENER")
@@ -195,6 +197,9 @@ public class ListenerServiceImpl implements ListenerService {
     @Override
     public void resendCommonOtp(String email) throws MessagingException {
         String otp = otpService.generateCommonOtp(email);
+        long startTime = System.currentTimeMillis();
         emailService.sendOtp(email, otp, 5);
+        long endTime = System.currentTimeMillis();
+        log.info("Resent OTP to email: {}, take {} seconds", email, (endTime - startTime)/1000.0);
     }
 }
