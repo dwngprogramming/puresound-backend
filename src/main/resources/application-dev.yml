@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/${MYSQL_DATABASE}
+    url: jdbc:mysql://localhost:3307/${MYSQL_DATABASE}
     username: root
     password: ${MYSQL_ROOT_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -25,21 +25,17 @@ spring:
     compose:
       file: docker-compose.dev.yml
 
-jwt:
-  secret: ${JWT_SECRET}
-  exp-at-min: ${EXP_AT_MIN}
-  exp-rt-min: ${EXP_RT_MIN}
+management:
+  endpoint:
+    health:
+      show-details: always
+    info:
+      access: unrestricted
 
 cookie:
   secure: false
   domain: ${COOKIE_DOMAIN}
   same-site: Lax
-
-listener:
-  callback-url: ${LISTENER_CALLBACK_SUCCESS_URL}
-
-artist:
-  callback-url: ${ARTIST_CALLBACK_SUCCESS_URL}
 
 otp:
   signup:

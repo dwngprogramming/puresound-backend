@@ -13,7 +13,7 @@ services:
     env_file:
       - .env.dev
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
@@ -26,7 +26,7 @@ services:
     env_file:
       - .env.dev
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis-data:/data
     networks:
