@@ -121,7 +121,7 @@ public class DefaultWeatherService implements WeatherService {
             return WeatherCondition.clear_night;
         }
 
-        return WeatherCondition.sunny;
+        return WeatherCondition.cloudy;
     }
 
     private boolean containsAny(String text, String... keywords) {
