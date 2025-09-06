@@ -1,6 +1,5 @@
 package com.puresound.backend.security.event;
 
-import com.puresound.backend.security.jwt.JwtTokenProvider;
 import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.security.local.LocalAuthenticationToken;
 import com.puresound.backend.security.oauth2.CustomOAuth2AuthenticationToken;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthenticationEventListener {
     UserServiceRouter router;
-    JwtTokenProvider jwtTokenProvider;
 
     @EventListener
     public void onAuthenticationSuccess(AuthenticationSuccessEvent event) {

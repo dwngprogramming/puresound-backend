@@ -6,7 +6,7 @@ server:
 
 spring:
   application:
-    name: puresound-backend
+    name: PureSound API
 
   profiles:
     active: dev
@@ -63,10 +63,9 @@ spring:
     properties:
       mail:
         smtp:
-          starttls:
+          startssl:
             enable: true
           auth: true
-
 
 springdoc:
   api-docs:
@@ -81,3 +80,31 @@ springdoc:
 logging:
   level:
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: ERROR
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+jwt:
+  secret: ${JWT_SECRET}
+  exp-at-min: ${EXP_AT_MIN}
+  exp-rt-min: ${EXP_RT_MIN}
+
+listener:
+  callback-url: ${LISTENER_CALLBACK_URL}
+
+artist:
+  callback-url: ${ARTIST_CALLBACK_URL}
+
+otp:
+  signup:
+    exp-min: ${OTP_SIGNUP_EXP_MIN}
+
+nominatim:
+  url: https://nominatim.openstreetmap.org/reverse
+
+weatherApi:
+  url: https://api.weatherapi.com/v1/current.json
+  key: ${WEATHER_API_KEY}

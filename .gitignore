@@ -39,6 +39,11 @@ out/
 ### Dev Secret ###
 .env.dev.secret
 
+### Test ###
+.env.test
+application-test.yml
+docker-compose.test.yml
+
 ### Prod ###
 .env.prod
 application-prod.yml

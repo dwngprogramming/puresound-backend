@@ -20,6 +20,7 @@ import com.puresound.backend.service.user.listener.ListenerService;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -79,6 +80,7 @@ public class AuthApi {
     }
 
     @PostMapping("/signup")
+    @UnauthenticatedAuditor(email = "#request.email()")
     public ResponseEntity<ApiResponse<Void>> listenerSignup(@Valid @RequestBody ListenerRegisterRequest request, Locale locale) throws MessagingException {
         listenerService.registerAndSendOtp(request);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.SIGNUP_SUCCESS, locale));
@@ -95,13 +97,23 @@ public class AuthApi {
     }
 
     @PostMapping("/check-email")
-    public ResponseEntity<ApiResponse<CheckEmailResponse>> checkEmailExists(@Valid @RequestBody CheckEmailRequest request, Locale locale) {
-        boolean result = listenerService.isEmailExists(request.email());
-        CheckEmailResponse checkEmailResponse = new CheckEmailResponse(result);
+    public ResponseEntity<ApiResponse<CheckExistsResponse>> checkEmailExists(@Valid @RequestBody CheckExistsRequest request, Locale locale) {
+        boolean result = listenerService.isEmailExists(request.field());
+        CheckExistsResponse checkExistsResponse = new CheckExistsResponse(result);
         if (result) {
-            return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.EMAIL_EXISTS, checkEmailResponse, locale));
+            return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.EMAIL_EXISTS, checkExistsResponse, locale));
         }
-        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.NEW_EMAIL, checkEmailResponse, locale));
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.NEW_EMAIL, checkExistsResponse, locale));
+    }
+
+    @PostMapping("/check-username")
+    public ResponseEntity<ApiResponse<CheckExistsResponse>> checkUsernameExists(@Valid @RequestBody CheckExistsRequest request, Locale locale) {
+        boolean result = listenerService.isUsernameExists(request.field());
+        CheckExistsResponse checkExistsResponse = new CheckExistsResponse(result);
+        if (result) {
+            return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.USERNAME_EXISTS, checkExistsResponse, locale));
+        }
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.NEW_USERNAME, checkExistsResponse, locale));
     }
 
     @PostMapping("/otp/send")

@@ -10,6 +10,8 @@ public enum ApiMessage {
     OTP_VERIFICATION_SUCCESS,
     EMAIL_VALID,
     CHANGE_PASSWORD_SUCCESS,
+    NEW_USERNAME,
+    GET_WEATHER_SUCCESS,
 
     // Fail + Logging
     LOCKED_ACCOUNT,
@@ -33,6 +35,8 @@ public enum ApiMessage {
     RETYPE_PASSWORD_NOT_MATCH,
     OTP_INVALID,
     EMAIL_NOT_EXISTS,
+    LOCATION_NOT_FOUND,
+    WEATHER_NOT_FOUND,
 
     // Only for logging, don't show to user & don't create message locale, or show Internal Server Error
     INVALID_FORMAT_TOKEN, INVALID_OAUTH2_PROVIDER

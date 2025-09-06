@@ -1,7 +1,7 @@
-package com.puresound.backend.entity.user.listener;
+package com.puresound.backend.repository.entity.user.listener;
 
 import com.puresound.backend.constant.user.Gender;
-import com.puresound.backend.entity.Base;
+import com.puresound.backend.repository.entity.Base;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

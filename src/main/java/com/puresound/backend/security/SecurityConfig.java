@@ -2,9 +2,10 @@ package com.puresound.backend.security;
 
 import com.puresound.backend.constant.api.BypassSecurity;
 import com.puresound.backend.security.converters.JwtAuthenticationTokenConverter;
-import com.puresound.backend.security.jwt.JwtAuthenticationEntryPoint;
+import com.puresound.backend.security.jwt.CustomAuthenticationEntryPoint;
 import com.puresound.backend.security.local.LocalAuthenticationProvider;
 import com.puresound.backend.security.oauth2.CustomAuthorizationRequestResolver;
+import com.puresound.backend.security.oauth2.CustomOAuth2FailureHandler;
 import com.puresound.backend.security.oauth2.CustomOAuth2SuccessHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +40,9 @@ public class SecurityConfig {
     JwtDecoder jwtDecoder;
     JwtAuthenticationTokenConverter jwtAuthenticationTokenConverter;
     LocalAuthenticationProvider localAuthenticationProvider;
-    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     CustomOAuth2SuccessHandler successHandler;
+    CustomOAuth2FailureHandler failureHandler;
     CustomAuthorizationRequestResolver authorizationRequestResolver;
 
     @Bean
@@ -60,13 +62,14 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(localAuthenticationProvider)
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .decoder(jwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationTokenConverter)
                         )
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorization -> authorization
@@ -75,6 +78,7 @@ public class SecurityConfig {
                         )
                         .redirectionEndpoint(redirection -> redirection.baseUri("/login/oauth2/code/*"))
                         .successHandler(successHandler)
+                        .failureHandler(failureHandler)
                 )
                 .build();
     }
@@ -84,6 +88,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOriginPatterns(List.of(
+                "http://192.168.10.171:3000",
                 "http://localhost:3000",
                 "https://puresound.space",
                 "https://*.puresound.space"

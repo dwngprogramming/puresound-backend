@@ -32,7 +32,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     ApiResponseFactory apiResponseFactory;
     MessageSource messageSource;
     ObjectMapper objectMapper;
@@ -55,7 +55,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             case null -> {
                 if (authException instanceof InsufficientAuthenticationException) {
 //                    LogFactory.createApplicationLog(LogLevel.INFO, ApiMessage.UNAUTHENTICATED, messageSource, authException);
-                    log.info("Unauthenticated. [InsufficientAuthenticationException]: {}", authException.getMessage(), authException);
+                    log.info("Unauthenticated. [InsufficientAuthenticationException]: {}", authException.getMessage());
                     apiMessage = ApiMessage.UNAUTHENTICATED;
                 } else {
                     LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INTERNAL_SERVER_ERROR, messageSource, authException);
@@ -64,7 +64,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             default ->
                     LogFactory.createApplicationLog(LogLevel.ERROR, ApiMessage.INTERNAL_SERVER_ERROR, messageSource, authException);
         }
-
 
         ApiResponse<Void> apiResponse = apiResponseFactory.create(apiMessage, locale);
 

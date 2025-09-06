@@ -1,4 +1,4 @@
-package com.puresound.backend.entity.user.oauth2;
+package com.puresound.backend.repository.entity.user.oauth2;
 
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.puresound.backend.constant.user.OAuth2Type;
