@@ -3,6 +3,7 @@ package com.puresound.backend.service.weather;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.constant.api.LogLevel;
+import com.puresound.backend.constant.weather.WeatherCondition;
 import com.puresound.backend.dto.location.LocationResponse;
 import com.puresound.backend.dto.location.ReverseGeocodingRequest;
 import com.puresound.backend.dto.weather.CurrentWeatherResponse;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -33,7 +33,6 @@ public class DefaultWeatherService implements WeatherService {
     final LocationService locationService;
     final RestClient restClient;
     final RedisWeatherService redisWeatherService;
-    final MessageSource messageSource;
 
     @Value("${weatherApi.key}")
     String key;
@@ -90,7 +89,7 @@ public class DefaultWeatherService implements WeatherService {
             double tempF = Math.round(current.path("temp_f").asDouble());
             String condition = current.path("condition").path("text").asText();
             boolean isDay = current.path("is_day").asInt() == 1;
-            String mappingCondition = mapWeatherCondition(condition, !isDay);
+            WeatherCondition mappingCondition = detectWeatherType(condition, !isDay);
 
             CurrentWeatherResponse currentWeather = new CurrentWeatherResponse(tempC, tempF, isDay, mappingCondition);
             return new WeatherResponse(location, currentWeather);
@@ -100,36 +99,29 @@ public class DefaultWeatherService implements WeatherService {
         }
     }
 
-    private String mapWeatherCondition(String condition, boolean isNight) {
-        String weatherKey = detectWeatherType(condition, isNight);
-        Locale locale = LocaleContextHolder.getLocale();
-
-        return messageSource.getMessage(weatherKey, null, locale);
-    }
-
-    private String detectWeatherType(String condition, boolean isNight) {
-        if (condition == null) return "CLOUDY";
+    private WeatherCondition detectWeatherType(String condition, boolean isNight) {
+        if (condition == null) return WeatherCondition.sunny;
 
         String lower = condition.toLowerCase();
 
         // Detect từ keywords của tất cả ngôn ngữ
         if (containsAny(lower, "tuyết", "snow", "blizzard", "snowy")) {
-            return "SNOWY";
+            return WeatherCondition.snowy;
         }
 
         if (containsAny(lower, "mưa", "rain", "storm", "rainy", "shower", "drizzle")) {
-            return "RAINY";
+            return WeatherCondition.rainy;
         }
 
         if (!isNight && containsAny(lower, "nắng", "sunny", "sun", "bright")) {
-            return "SUNNY";
+            return WeatherCondition.sunny;
         }
 
         if (isNight && containsAny(lower, "clear", "trong", "fair")) {
-            return "CLEAR_NIGHT";
+            return WeatherCondition.clear_night;
         }
 
-        return "SUNNY";
+        return WeatherCondition.sunny;
     }
 
     private boolean containsAny(String text, String... keywords) {

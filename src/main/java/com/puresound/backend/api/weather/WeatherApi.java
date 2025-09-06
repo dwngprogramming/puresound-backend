@@ -36,8 +36,6 @@ public class WeatherApi {
             Locale locale) {
 
         WeatherResponse weatherResponse = weatherService.getCurrentWeather(request);
-        ApiResponse<WeatherResponse> apiResponse =
-                apiResponseFactory.create(ApiMessage.GET_WEATHER_SUCCESS, weatherResponse, locale);
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_WEATHER_SUCCESS, weatherResponse, locale));
     }
 }
