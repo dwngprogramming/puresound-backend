@@ -10,7 +10,7 @@ import com.puresound.backend.dto.auth.ResetPasswordRequest;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.dto.listener.ListenerResponse;
-import com.puresound.backend.repository.entity.user.listener.Listener;
+import com.puresound.backend.entity.listener.Listener;
 import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.mapper.listener.ListenerMapper;
 import com.puresound.backend.repository.listener.ListenerRepository;

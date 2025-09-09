@@ -1,4 +1,4 @@
-package com.puresound.backend.repository.entity;
+package com.puresound.backend.entity;
 
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.puresound.backend.constant.Status;

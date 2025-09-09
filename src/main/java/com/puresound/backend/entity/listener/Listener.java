@@ -1,7 +1,8 @@
-package com.puresound.backend.repository.entity.user.listener;
+package com.puresound.backend.entity.listener;
 
 import com.puresound.backend.constant.user.Gender;
-import com.puresound.backend.repository.entity.Base;
+import com.puresound.backend.entity.Base;
+import com.puresound.backend.entity.subscription.listener.ListenerSubscription;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "listeners")
@@ -50,4 +52,7 @@ public class Listener extends Base {
 
     @Column(name = "last_login_at", columnDefinition = "DATETIME(6)")
     Instant lastLoginAt;
+
+    @OneToMany(mappedBy = "listener", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ListenerSubscription> subscriptions;
 }
