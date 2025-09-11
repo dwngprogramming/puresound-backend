@@ -10,6 +10,7 @@ import com.puresound.backend.dto.auth.ResetPasswordRequest;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.dto.listener.ListenerResponse;
+import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.entity.listener.Listener;
 import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.mapper.listener.ListenerMapper;
@@ -18,6 +19,7 @@ import com.puresound.backend.security.local.LocalAuthentication;
 import com.puresound.backend.security.oauth2.OAuth2Authentication;
 import com.puresound.backend.service.email.EmailService;
 import com.puresound.backend.service.otp.OtpService;
+import com.puresound.backend.service.subscription.listener.ListenerSubService;
 import com.puresound.backend.service.user.oauth2.OAuth2ProviderService;
 import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
@@ -32,13 +34,14 @@ import org.springframework.transaction.annotation.Transactional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Service("LISTENER")
-public class ListenerServiceImpl implements ListenerService {
+public class DefaultListenerService implements ListenerService {
     ListenerRepository listenerRepository;
     ListenerMapper listenerMapper;
     OAuth2ProviderService oAuth2ProviderService;
     OtpService otpService;
     EmailService emailService;
-    private final PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
+    ListenerSubService subService;
 
     @Override
     public LocalAuthentication loginByUsernameOrEmail(String usernameOrEmail) {
@@ -195,11 +198,13 @@ public class ListenerServiceImpl implements ListenerService {
     }
 
     @Override
+    public ListenerSubResponse getCurrentSubscription(String listenerId) {
+        return subService.getCurrentByListenerId(listenerId);
+    }
+
+    @Override
     public void resendCommonOtp(String email) throws MessagingException {
         String otp = otpService.generateCommonOtp(email);
-        long startTime = System.currentTimeMillis();
         emailService.sendOtp(email, otp, 5);
-        long endTime = System.currentTimeMillis();
-        log.info("Resent OTP to email: {}, take {} seconds", email, (endTime - startTime)/1000.0);
     }
 }

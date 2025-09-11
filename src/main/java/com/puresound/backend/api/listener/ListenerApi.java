@@ -3,6 +3,7 @@ package com.puresound.backend.api.listener;
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.dto.ApiResponse;
 import com.puresound.backend.dto.listener.ListenerResponse;
+import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.service.user.listener.ListenerService;
 import com.puresound.backend.util.ApiResponseFactory;
@@ -34,5 +35,12 @@ public class ListenerApi {
         String id = principal.id();
         ListenerResponse listenerResponse = listenerService.getById(id);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_LISTENER_SUCCESS, listenerResponse, locale));
+    }
+
+    @GetMapping("/subscription")
+    public ResponseEntity<ApiResponse<?>> getMySubscription(@AuthenticationPrincipal UserPrincipal principal, Locale locale) {
+        String id = principal.id();
+        ListenerSubResponse subscription = listenerService.getCurrentSubscription(id);
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_MY_SUBSCRIPTION_SUCCESS, subscription, locale));
     }
 }

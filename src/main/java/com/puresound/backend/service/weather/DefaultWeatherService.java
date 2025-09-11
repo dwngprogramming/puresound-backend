@@ -32,7 +32,7 @@ import java.util.Locale;
 public class DefaultWeatherService implements WeatherService {
     final LocationService locationService;
     final RestClient restClient;
-    final RedisWeatherService redisWeatherService;
+    final CacheWeatherService cacheWeatherService;
 
     @Value("${weatherApi.key}")
     String key;
@@ -48,7 +48,7 @@ public class DefaultWeatherService implements WeatherService {
         LocationResponse locationResponse = locationService.reverseGeocode(request);
 
         // 2. Try to get from Redis cache first
-        WeatherResponse cachedWeather = redisWeatherService.getWeather(locationResponse);
+        WeatherResponse cachedWeather = cacheWeatherService.getWeather(locationResponse);
         if (cachedWeather != null) {
             return cachedWeather;
         }
@@ -69,7 +69,7 @@ public class DefaultWeatherService implements WeatherService {
             WeatherResponse weatherResponse = extractWeather(jsonNode, locationResponse);
 
             // 4. Save to Redis cache (fire and forget)
-            redisWeatherService.saveWeather(weatherResponse);
+            cacheWeatherService.saveWeather(weatherResponse);
 
             return weatherResponse;
 

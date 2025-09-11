@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class ListenerMapperDecorator implements ListenerMapper {
+public abstract class ListenerDecorator implements ListenerMapper {
 
     @Override
     public LocalAuthentication toLocalAuthentication(Listener listener) {

@@ -16,11 +16,10 @@ import java.time.Duration;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class DefaultRedisWeatherService implements RedisWeatherService {
+public class DefaultCacheWeatherService implements CacheWeatherService {
     RedisTemplate<String, Object> redisTemplate;
-
-    private static final String WEATHER_CACHE_PREFIX = "weather:";
-    private static final Duration CACHE_TTL = Duration.ofMinutes(20);
+    String WEATHER_CACHE_PREFIX = "weather:";
+    Duration CACHE_TTL = Duration.ofMinutes(20);
 
     @Override
     public WeatherResponse getWeather(LocationResponse location) {

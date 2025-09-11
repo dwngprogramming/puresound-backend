@@ -17,11 +17,11 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ListenerSubscriptionPeriod extends Base {
+public class ListenerSubPeriod extends Base {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_id", nullable = false)
-    ListenerSubscription subscription;
+    ListenerSub subscription;
 
     @Column(name = "period", nullable = false)
     Integer period;

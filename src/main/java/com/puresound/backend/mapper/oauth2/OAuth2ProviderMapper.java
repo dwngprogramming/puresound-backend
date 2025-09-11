@@ -7,7 +7,7 @@ import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 
 @Mapper(config = GlobalMapperConfig.class)
-@DecoratedWith(OAuth2ProviderMapperDecorator.class)
+@DecoratedWith(OAuth2ProviderDecorator.class)
 public interface OAuth2ProviderMapper {
     OAuth2Provider createOAuth2Provider(OAuth2ProviderRequest request);
 }

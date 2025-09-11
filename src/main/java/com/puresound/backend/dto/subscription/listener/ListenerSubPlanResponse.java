@@ -6,7 +6,7 @@ import com.puresound.backend.constant.user.listener.ListenerSubscriptionType;
 
 import java.math.BigDecimal;
 
-public record ListenerSubscriptionPlanResponse(
+public record ListenerSubPlanResponse(
         String name,
         String description,
         BigDecimal price,

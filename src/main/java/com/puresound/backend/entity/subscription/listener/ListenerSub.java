@@ -8,6 +8,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Entity
 @Table(name = "listener_subscriptions")
 @Getter
@@ -16,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ListenerSubscription extends Base {
+public class ListenerSub extends Base {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "listener_id", nullable = false)
@@ -24,7 +26,7 @@ public class ListenerSubscription extends Base {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_plan_id", nullable = false)
-    ListenerSubscriptionPlan plan;
+    ListenerSubPlan plan;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "subs_status", nullable = false)
@@ -37,4 +39,7 @@ public class ListenerSubscription extends Base {
     @Column(name = "total_period", nullable = false)
     @Builder.Default
     Integer totalPeriod = 0;
+
+    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ListenerSubPeriod> periods;
 }

@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class OAuth2ProviderMapperDecorator implements OAuth2ProviderMapper {
+public abstract class OAuth2ProviderDecorator implements OAuth2ProviderMapper {
     @Override
     public OAuth2Provider createOAuth2Provider(OAuth2ProviderRequest request) {
         return OAuth2Provider.builder()

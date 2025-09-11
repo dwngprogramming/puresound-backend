@@ -1,7 +1,7 @@
 package com.puresound.backend.dto.listener;
 
 import com.puresound.backend.constant.Status;
-import com.puresound.backend.dto.subscription.listener.ListenerSubscriptionResponse;
+import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -21,6 +21,6 @@ public record ListenerResponse(
     Status status,
     Instant createdAt,
     Instant updatedAt,
-    List<ListenerSubscriptionResponse> subscriptions
+    List<ListenerSubResponse> subscriptions
 ) {
 }

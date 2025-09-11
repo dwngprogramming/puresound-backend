@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ListenerSubscriptionPlan extends Base {
+public class ListenerSubPlan extends Base {
     @Column(nullable = false)
     String name;
 

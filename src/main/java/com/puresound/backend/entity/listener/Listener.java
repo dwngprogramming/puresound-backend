@@ -2,7 +2,7 @@ package com.puresound.backend.entity.listener;
 
 import com.puresound.backend.constant.user.Gender;
 import com.puresound.backend.entity.Base;
-import com.puresound.backend.entity.subscription.listener.ListenerSubscription;
+import com.puresound.backend.entity.subscription.listener.ListenerSub;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -54,5 +54,5 @@ public class Listener extends Base {
     Instant lastLoginAt;
 
     @OneToMany(mappedBy = "listener", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<ListenerSubscription> subscriptions;
+    List<ListenerSub> subscriptions;
 }
