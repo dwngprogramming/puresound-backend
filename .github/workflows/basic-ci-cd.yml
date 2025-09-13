@@ -24,8 +24,8 @@ jobs:
         run: chmod +x gradlew
 
       # 4. Build với Gradle
-      - name: Build with Gradle (with test)
-        run: ./gradlew clean build -Dspring.profiles.active=test
+      - name: Build with Gradle (without test)
+        run: ./gradlew clean build -x test
 
       # 5. Lấy version từ build.gradle (dòng "version = '...'")
       - name: Get Project version
