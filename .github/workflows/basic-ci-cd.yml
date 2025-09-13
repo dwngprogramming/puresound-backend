@@ -25,7 +25,7 @@ jobs:
 
       # 4. Build với Gradle
       - name: Build with Gradle (with test)
-        run: ./gradlew clean build
+        run: ./gradlew clean build -Dspring.profiles.active=test
 
       # 5. Lấy version từ build.gradle (dòng "version = '...'")
       - name: Get Project version
