@@ -2,6 +2,7 @@ package com.puresound.backend.service.user;
 
 import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.auth.ResetPasswordRequest;
+import com.puresound.backend.dto.subscription.BasicSubResponse;
 import com.puresound.backend.security.local.LocalAuthentication;
 import jakarta.mail.MessagingException;
 
@@ -19,4 +20,6 @@ public interface UserService {
     void resendCommonOtp(String email) throws MessagingException;
 
     void updateLastLogin(String id);
+
+    BasicSubResponse getCurrentBaseSubscription(String id);
 }

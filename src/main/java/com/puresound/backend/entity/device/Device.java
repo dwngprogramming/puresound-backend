@@ -1,8 +1,8 @@
-package com.puresound.backend.repository.entity.user.device;
+package com.puresound.backend.entity.device;
 
 import com.puresound.backend.constant.device.DeviceType;
-import com.puresound.backend.repository.entity.Base;
-import com.puresound.backend.repository.entity.user.listener.Listener;
+import com.puresound.backend.entity.Base;
+import com.puresound.backend.entity.listener.Listener;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

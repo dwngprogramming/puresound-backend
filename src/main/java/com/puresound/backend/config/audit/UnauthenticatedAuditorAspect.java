@@ -23,20 +23,19 @@ public class UnauthenticatedAuditorAspect {
     @Around("@annotation(unauthenticatedAuditor)")
     public Object handleUnauthenticatedAuditor(ProceedingJoinPoint joinPoint,
                                                UnauthenticatedAuditor unauthenticatedAuditor) throws Throwable {
-        String auditorEmail = null;
+        String auditorEmail;
         try {
             auditorEmail = resolveEmail(joinPoint, unauthenticatedAuditor);
             UnauthenticatedAuditorContextHolder.setCurrentAuditor(auditorEmail);
             return joinPoint.proceed();
         } finally {
-            log.debug("Clearing auditor context for email: {}", auditorEmail);
             UnauthenticatedAuditorContextHolder.clear();
         }
     }
 
     private String resolveEmail(ProceedingJoinPoint joinPoint, UnauthenticatedAuditor annotation) {
         String email = annotation.email();
-        return email.matches("^#.*")  ?
+        return email.matches("^#.*") ?
                 evaluateSpelExpression(joinPoint, email) :
                 email;
     }

@@ -1,5 +1,6 @@
 package com.puresound.backend.service.weather;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puresound.backend.dto.location.LocationResponse;
 import com.puresound.backend.dto.weather.WeatherResponse;
 import com.puresound.backend.util.NormalizeLetterUtil;
@@ -16,11 +17,11 @@ import java.time.Duration;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class DefaultRedisWeatherService implements RedisWeatherService {
+public class DefaultCacheWeatherService implements CacheWeatherService {
     RedisTemplate<String, Object> redisTemplate;
-
-    private static final String WEATHER_CACHE_PREFIX = "weather:";
-    private static final Duration CACHE_TTL = Duration.ofMinutes(20);
+    String WEATHER_CACHE_PREFIX = "weather:";
+    Duration CACHE_TTL = Duration.ofMinutes(20);
+    ObjectMapper objectMapper;
 
     @Override
     public WeatherResponse getWeather(LocationResponse location) {
@@ -29,7 +30,7 @@ public class DefaultRedisWeatherService implements RedisWeatherService {
 
         try {
             Object cached = redisTemplate.opsForValue().get(redisKey);
-            return cached != null ? (WeatherResponse) cached : null;
+            return cached != null ? objectMapper.convertValue(cached, WeatherResponse.class) : null;
         } catch (Exception e) {
             log.info("Not contains this weather from Redis cache: {}", e.getMessage());
             return null;

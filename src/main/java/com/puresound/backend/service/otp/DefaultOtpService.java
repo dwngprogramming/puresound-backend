@@ -16,7 +16,7 @@ import java.time.Duration;
 @Service
 public class DefaultOtpService implements OtpService {
     final RedisTemplate<String, Object> redisTemplate;
-    static final String COMMON_OTP_PREFIX = "OTP:COMMON_";
+    static final String COMMON_OTP_PREFIX = "otp:common:";
     @Value("${otp.signup.exp-min}")
     long signupExp;
 

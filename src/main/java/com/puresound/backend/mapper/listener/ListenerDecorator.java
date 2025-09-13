@@ -3,7 +3,7 @@ package com.puresound.backend.mapper.listener;
 import com.puresound.backend.constant.user.UserType;
 import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
-import com.puresound.backend.repository.entity.user.listener.Listener;
+import com.puresound.backend.entity.listener.Listener;
 import com.puresound.backend.security.local.LocalAuthentication;
 import com.puresound.backend.security.oauth2.OAuth2Authentication;
 import lombok.AccessLevel;
@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class ListenerMapperDecorator implements ListenerMapper {
+public abstract class ListenerDecorator implements ListenerMapper {
 
     @Override
     public LocalAuthentication toLocalAuthentication(Listener listener) {

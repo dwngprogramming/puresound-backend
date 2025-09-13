@@ -30,7 +30,6 @@ public class AuthenticationEventListener {
         if (isDirectLogin(event)) {
             if (event.getAuthentication().getPrincipal() instanceof UserPrincipal principal) {
                 UserService userService = router.resolve(principal.userType());
-                log.info("Updating last login for {}: {}", principal.userType().name(), principal.id());
                 userService.updateLastLogin(principal.id());
             }
         }

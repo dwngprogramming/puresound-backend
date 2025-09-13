@@ -1,6 +1,6 @@
 package com.puresound.backend.repository.listener;
 
-import com.puresound.backend.repository.entity.user.listener.Listener;
+import com.puresound.backend.entity.listener.Listener;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

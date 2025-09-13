@@ -1,7 +1,7 @@
 package com.puresound.backend.repository.oauth2;
 
 import com.puresound.backend.constant.user.OAuth2Type;
-import com.puresound.backend.repository.entity.user.oauth2.OAuth2Provider;
+import com.puresound.backend.entity.oauth2.OAuth2Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

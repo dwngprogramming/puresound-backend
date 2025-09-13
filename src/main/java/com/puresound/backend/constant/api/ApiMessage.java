@@ -12,6 +12,7 @@ public enum ApiMessage {
     CHANGE_PASSWORD_SUCCESS,
     NEW_USERNAME,
     GET_WEATHER_SUCCESS,
+    GET_MY_SUBSCRIPTION_SUCCESS,
 
     // Fail + Logging
     LOCKED_ACCOUNT,
