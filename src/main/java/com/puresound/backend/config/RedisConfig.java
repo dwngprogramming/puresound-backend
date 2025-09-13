@@ -26,19 +26,18 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory,
-                                                       @Qualifier("redisObjectMapper") ObjectMapper objectMapper) {
+                                                       ObjectMapper objectMapper) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
         // Use StringRedisSerializer to serialize key
         template.setKeySerializer(new StringRedisSerializer());
-
-        // Use Jackson2JsonRedisSerializer to serialize value
+        // Use GenericJackson2JsonRedisSerializer to serialize value
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
 
         // Configure Hash operation
         template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
 
         template.afterPropertiesSet();
         return template;
@@ -51,7 +50,6 @@ public class RedisConfig {
 
         // Use StringRedisSerializer to serialize key
         template.setKeySerializer(new StringRedisSerializer());
-
         // Use Jackson2JsonRedisSerializer to serialize value
         template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Long.class));
 

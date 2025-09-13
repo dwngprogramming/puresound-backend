@@ -30,5 +30,5 @@ public interface ListenerService extends UserService {
 
     ListenerResponse getById(String id);
 
-    ListenerSubResponse getCurrentSubscription(String listenerId);
+    ListenerSubResponse getCurrentDetailSubscription(String listenerId);
 }

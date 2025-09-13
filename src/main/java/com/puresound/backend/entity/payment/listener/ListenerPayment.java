@@ -1,6 +1,6 @@
 package com.puresound.backend.entity.payment.listener;
 
-import com.puresound.backend.constant.payment.CurrencyCode;
+import com.puresound.backend.constant.payment.Currency;
 import com.puresound.backend.constant.payment.PaymentGateway;
 import com.puresound.backend.constant.payment.PaymentStatus;
 import com.puresound.backend.entity.Base;
@@ -36,8 +36,8 @@ public class ListenerPayment extends Base {
     BigDecimal actualAmount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "currency_code", nullable = false)
-    CurrencyCode currencyCode;
+    @Column(name = "currency", nullable = false)
+    Currency currency;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_gateway", nullable = false)

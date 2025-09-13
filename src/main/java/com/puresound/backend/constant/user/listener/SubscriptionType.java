@@ -1,6 +1,7 @@
 package com.puresound.backend.constant.user.listener;
 
-public enum ListenerSubscriptionType {
+public enum SubscriptionType {
+    // Listener
     INDIVIDUAL,
     STUDENT
 }

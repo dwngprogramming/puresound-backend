@@ -1,6 +1,6 @@
 package com.puresound.backend.constant.payment;
 
-public enum CurrencyCode {
+public enum Currency {
     VND,
     USD
 }

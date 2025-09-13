@@ -1,5 +1,6 @@
 package com.puresound.backend.service.subscription.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puresound.backend.dto.subscription.listener.ListenerSubCache;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.exception.InternalServerException;
@@ -22,6 +23,7 @@ public class DefaultListenerSubCacheService implements ListenerSubCacheService {
     RedisTemplate<String, Object> redisTemplate;
     ListenerSubCacheMapper mapper;
     String SUBSCRIPTION_PREFIX = "subscription:";
+    ObjectMapper objectMapper;
 
     @Override
     public ListenerSubCache get(String listenerId) {
@@ -29,7 +31,7 @@ public class DefaultListenerSubCacheService implements ListenerSubCacheService {
         try {
             Object cached = redisTemplate.opsForValue().get(cacheKey);
             if ((cached instanceof ListenerSubCache)) {
-                return (ListenerSubCache) cached;
+                return objectMapper.convertValue(cached, ListenerSubCache.class);
             }
             return null;
         } catch (Exception e) {

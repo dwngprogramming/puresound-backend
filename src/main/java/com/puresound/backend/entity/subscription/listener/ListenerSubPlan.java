@@ -1,8 +1,8 @@
 package com.puresound.backend.entity.subscription.listener;
 
-import com.puresound.backend.constant.payment.CurrencyCode;
-import com.puresound.backend.constant.user.listener.ListenerBillingCycle;
-import com.puresound.backend.constant.user.listener.ListenerSubscriptionType;
+import com.puresound.backend.constant.payment.Currency;
+import com.puresound.backend.constant.user.listener.BillingCycle;
+import com.puresound.backend.constant.user.listener.SubscriptionType;
 import com.puresound.backend.entity.Base;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,24 +20,18 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ListenerSubPlan extends Base {
-    @Column(nullable = false)
-    String name;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "subscription_type", nullable = false)
+    SubscriptionType subscriptionType;
 
-    @Column(columnDefinition = "TEXT")
-    String description;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "billing_cycle", nullable = false)
+    BillingCycle billingCycle;
 
     @Column(nullable = false, precision = 10, scale = 2)
     BigDecimal price;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "currency_code", nullable = false)
-    CurrencyCode currencyCode;
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "billing_cycle", nullable = false)
-    ListenerBillingCycle billingCycle;
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "subscription_type", nullable = false)
-    ListenerSubscriptionType subscriptionType;
+    @Column(name = "currency", nullable = false)
+    Currency currency;
 }

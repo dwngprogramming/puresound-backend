@@ -1,5 +1,6 @@
 package com.puresound.backend.service.subscription.listener;
 
+import com.puresound.backend.dto.subscription.BasicSubResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubCache;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.entity.subscription.listener.ListenerSubPeriod;
@@ -20,7 +21,7 @@ public class DefaultListenerSubService implements ListenerSubService {
     ListenerSubMapper subMapper;
 
     @Override
-    public ListenerSubResponse getCurrentByListenerId(String listenerId) {
+    public ListenerSubResponse getCurrentDetailByListenerId(String listenerId) {
         // Try to get from cache first
         ListenerSubCache cached = cacheService.get(listenerId);
         if (cached != null) {
@@ -35,6 +36,12 @@ public class DefaultListenerSubService implements ListenerSubService {
             cacheService.create(listenerId, response);
             return response;
         }
-        return null;
+        return ListenerSubResponse.empty();
+    }
+
+    @Override
+    public BasicSubResponse getCurrentBasicByListenerId(String listenerId) {
+        ListenerSubResponse detail = getCurrentDetailByListenerId(listenerId);
+        return subMapper.toBasicSubscriptionResponse(detail);
     }
 }

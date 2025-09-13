@@ -10,6 +10,7 @@ import com.puresound.backend.dto.auth.ResetPasswordRequest;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.dto.listener.ListenerResponse;
+import com.puresound.backend.dto.subscription.BasicSubResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.entity.listener.Listener;
 import com.puresound.backend.exception.exts.BadRequestException;
@@ -100,6 +101,11 @@ public class DefaultListenerService implements ListenerService {
     @Override
     public void updateLastLogin(String id) {
         listenerRepository.updateLastLoginAt(id);
+    }
+
+    @Override
+    public BasicSubResponse getCurrentBaseSubscription(String id) {
+        return subService.getCurrentBasicByListenerId(id);
     }
 
     @Override
@@ -198,8 +204,8 @@ public class DefaultListenerService implements ListenerService {
     }
 
     @Override
-    public ListenerSubResponse getCurrentSubscription(String listenerId) {
-        return subService.getCurrentByListenerId(listenerId);
+    public ListenerSubResponse getCurrentDetailSubscription(String listenerId) {
+        return subService.getCurrentDetailByListenerId(listenerId);
     }
 
     @Override

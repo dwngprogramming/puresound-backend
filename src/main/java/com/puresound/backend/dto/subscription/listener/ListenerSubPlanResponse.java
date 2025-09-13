@@ -1,17 +1,15 @@
 package com.puresound.backend.dto.subscription.listener;
 
-import com.puresound.backend.constant.payment.CurrencyCode;
-import com.puresound.backend.constant.user.listener.ListenerBillingCycle;
-import com.puresound.backend.constant.user.listener.ListenerSubscriptionType;
+import com.puresound.backend.constant.payment.Currency;
+import com.puresound.backend.constant.user.listener.BillingCycle;
+import com.puresound.backend.constant.user.listener.SubscriptionType;
 
 import java.math.BigDecimal;
 
 public record ListenerSubPlanResponse(
-        String name,
-        String description,
+        BillingCycle billingCycle,
+        SubscriptionType subscriptionType,
         BigDecimal price,
-        CurrencyCode currencyCode,
-        ListenerBillingCycle billingCycle,
-        ListenerSubscriptionType subscriptionType
+        Currency currency
 ) {
 }

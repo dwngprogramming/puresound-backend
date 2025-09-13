@@ -1,6 +1,6 @@
 package com.puresound.backend.entity.coupon;
 
-import com.puresound.backend.constant.payment.CurrencyCode;
+import com.puresound.backend.constant.payment.Currency;
 import com.puresound.backend.constant.payment.DiscountType;
 import com.puresound.backend.entity.Base;
 import jakarta.persistence.*;
@@ -38,8 +38,8 @@ public class ListenerCoupon extends Base {
     DiscountType discountType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "currency_code")
-    CurrencyCode currencyCode;
+    @Column(name = "currency")
+    Currency currency;
 
     @Column(name = "start_date", nullable = false, columnDefinition = "DATETIME(6)")
     Instant startDate;

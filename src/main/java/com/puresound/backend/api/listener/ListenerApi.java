@@ -3,6 +3,7 @@ package com.puresound.backend.api.listener;
 import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.dto.ApiResponse;
 import com.puresound.backend.dto.listener.ListenerResponse;
+import com.puresound.backend.dto.subscription.BasicSubResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.service.user.listener.ListenerService;
@@ -37,10 +38,17 @@ public class ListenerApi {
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_LISTENER_SUCCESS, listenerResponse, locale));
     }
 
-    @GetMapping("/subscription")
-    public ResponseEntity<ApiResponse<?>> getMySubscription(@AuthenticationPrincipal UserPrincipal principal, Locale locale) {
+    @GetMapping("/subscription/base")
+    public ResponseEntity<ApiResponse<BasicSubResponse>> getMyBasicSubscription(@AuthenticationPrincipal UserPrincipal principal, Locale locale) {
         String id = principal.id();
-        ListenerSubResponse subscription = listenerService.getCurrentSubscription(id);
+        BasicSubResponse subscription = listenerService.getCurrentBaseSubscription(id);
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_MY_SUBSCRIPTION_SUCCESS, subscription, locale));
+    }
+
+    @GetMapping("/subscription/detail")
+    public ResponseEntity<ApiResponse<ListenerSubResponse>> getMyDetailSubscription(@AuthenticationPrincipal UserPrincipal principal, Locale locale) {
+        String id = principal.id();
+        ListenerSubResponse subscription = listenerService.getCurrentDetailSubscription(id);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_MY_SUBSCRIPTION_SUCCESS, subscription, locale));
     }
 }

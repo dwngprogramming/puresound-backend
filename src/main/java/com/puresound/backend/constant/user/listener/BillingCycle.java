@@ -1,6 +1,6 @@
 package com.puresound.backend.constant.user.listener;
 
-public enum ListenerBillingCycle {
+public enum BillingCycle {
     MONTHLY,
     QUARTERLY,
     BIANNUAL,
