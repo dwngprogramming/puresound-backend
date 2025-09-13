@@ -46,5 +46,4 @@ docker-compose.test.yml
 
 ### Prod ###
 .env.prod
-application-prod.yml
 docker-compose.prod.yml
