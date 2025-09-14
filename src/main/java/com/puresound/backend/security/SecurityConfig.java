@@ -91,7 +91,9 @@ public class SecurityConfig {
                 "http://192.168.10.171:3000",
                 "http://localhost:3000",
                 "https://puresound.space",
-                "https://*.puresound.space"
+                "https://*.puresound.space",
+                // For Vercel previews deployment
+                "https://puresound-*-dwngprogrammings-projects.vercel.app"
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
