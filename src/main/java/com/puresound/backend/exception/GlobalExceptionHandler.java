@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception e, Locale locale) {
-        log.error("Unexpected error occurred. [{}]: {}", e.getClass().getName(), e.getMessage(), e);
+        log.error("Unexpected error occurred. [{}]: {}", e.getClass().getName(), e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(apiResponseFactory.create(ApiMessage.INTERNAL_SERVER_ERROR, locale));
