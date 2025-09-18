@@ -48,3 +48,4 @@ docker-compose.test.yml
 .env.prod
 .env.prod.*
 docker-compose.prod.yml
+blue-green.sh
