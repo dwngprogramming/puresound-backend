@@ -13,7 +13,7 @@ public class BypassSecurity {
             "/api/v1/files/public/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/actuator/health/**",
+            "/actuator/**",
             "/favicon.ico",
             "/error"
     };

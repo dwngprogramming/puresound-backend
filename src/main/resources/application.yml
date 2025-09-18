@@ -81,12 +81,6 @@ logging:
   level:
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: ERROR
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-
 jwt:
   secret: ${JWT_SECRET}
   exp-at-min: ${EXP_AT_MIN}
