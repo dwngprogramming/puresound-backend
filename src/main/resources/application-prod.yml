@@ -36,15 +36,20 @@ spring:
       password: ${REDIS_PASSWORD}
 
 management:
+  health:
+    mail:
+      enabled: false
   endpoints:
     web:
       exposure:
         include: health,info
   endpoint:
     health:
-      show-details: always
+      show-details: when_authorized
+      show-components: always
+      roles: ACTUATOR
     info:
-      access: unrestricted
+      access: none
 
 cookie:
   secure: true
