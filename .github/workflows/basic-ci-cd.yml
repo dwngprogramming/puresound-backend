@@ -46,7 +46,7 @@ jobs:
           docker build -t $IMAGE_NAME:${{ env.VERSION }} .
           docker push $IMAGE_NAME:${{ env.VERSION }}
 
-      # 8. Deploy qua SSH (update .env.prod + restart container)
+      # 8. Deploy qua SSH (zero downtime với blue-green deployment)
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -55,6 +55,4 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd puresound-api
-            sed -i "s/^APP_VERSION=.*/APP_VERSION=${{ env.VERSION }}/" .env.prod
-            docker compose -f docker-compose.prod.yml --env-file .env.prod pull
-            docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+            ./blue-green.sh ${{ env.VERSION }}
