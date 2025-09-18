@@ -20,7 +20,9 @@ FROM eclipse-temurin:21-jre-alpine-3.21
 # Thiết lập thông tin về người bảo trì
 LABEL maintainer="dwnq.coding@gmail.com"
 LABEL description="PureSound API - Music Streaming Backend Service"
-LABEL version="1.0.1"
+
+# ✅ Cài đặt curk để test healthcheck (Alpine Linux dùng apk thay vì apt-get)
+RUN apk add --no-cache curl
 
 # Tạo thư mục logs và config
 RUN mkdir -p /app/logs /app/config
