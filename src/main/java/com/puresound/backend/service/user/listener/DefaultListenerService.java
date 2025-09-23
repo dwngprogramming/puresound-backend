@@ -11,6 +11,7 @@ import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.dto.listener.ListenerResponse;
 import com.puresound.backend.dto.subscription.BasicSubResponse;
+import com.puresound.backend.dto.subscription.listener.ListenerSubPlanResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.entity.listener.Listener;
 import com.puresound.backend.exception.exts.BadRequestException;
@@ -30,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -206,6 +209,11 @@ public class DefaultListenerService implements ListenerService {
     @Override
     public ListenerSubResponse getCurrentDetailSubscription(String listenerId) {
         return subService.getCurrentDetailByListenerId(listenerId);
+    }
+
+    @Override
+    public List<ListenerSubPlanResponse> getAllSubscriptionPlans(boolean isFirstSubscription) {
+        return subService.getAllPlans(isFirstSubscription);
     }
 
     @Override

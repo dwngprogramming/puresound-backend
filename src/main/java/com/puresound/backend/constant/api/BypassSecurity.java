@@ -8,6 +8,7 @@ public class BypassSecurity {
             "/api/v1/auth/**",
             "/api/v1/token/**",
             "/api/v1/weather/current",
+            "/api/v1/listener/plans",
             "/oauth2/**",
             "/api/v1/public/**",
             "/api/v1/files/public/**",
