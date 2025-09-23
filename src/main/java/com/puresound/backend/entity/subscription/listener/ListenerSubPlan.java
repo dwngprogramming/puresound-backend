@@ -1,6 +1,7 @@
 package com.puresound.backend.entity.subscription.listener;
 
 import com.puresound.backend.constant.payment.Currency;
+import com.puresound.backend.constant.user.Eligibility;
 import com.puresound.backend.constant.user.listener.BillingCycle;
 import com.puresound.backend.constant.user.listener.SubscriptionType;
 import com.puresound.backend.entity.Base;
@@ -34,4 +35,8 @@ public class ListenerSubPlan extends Base {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "currency", nullable = false)
     Currency currency;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "eligibility", nullable = false)
+    Eligibility eligibility;
 }

@@ -4,6 +4,7 @@ import com.puresound.backend.constant.api.ApiMessage;
 import com.puresound.backend.dto.ApiResponse;
 import com.puresound.backend.dto.listener.ListenerResponse;
 import com.puresound.backend.dto.subscription.BasicSubResponse;
+import com.puresound.backend.dto.subscription.listener.ListenerSubPlanResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.service.user.listener.ListenerService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Locale;
 
 @RestController
@@ -50,5 +52,12 @@ public class ListenerApi {
         String id = principal.id();
         ListenerSubResponse subscription = listenerService.getCurrentDetailSubscription(id);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_MY_SUBSCRIPTION_SUCCESS, subscription, locale));
+    }
+
+    @GetMapping("/plans")
+    public ResponseEntity<ApiResponse<List<ListenerSubPlanResponse>>> getSubscriptionPlans(Locale locale) {
+        boolean isFirstSubscription = false; // TODO: Temporary set to false, need to check from user's subscription history
+        List<ListenerSubPlanResponse> plans = listenerService.getAllSubscriptionPlans(isFirstSubscription);
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_ALL_PLANS_SUCCESS, plans, locale));
     }
 }

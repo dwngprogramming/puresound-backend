@@ -2,6 +2,7 @@ package com.puresound.backend.service.subscription.listener;
 
 import com.puresound.backend.dto.subscription.BasicSubResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubCache;
+import com.puresound.backend.dto.subscription.listener.ListenerSubPlanResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.entity.subscription.listener.ListenerSubPeriod;
 import com.puresound.backend.mapper.subscription.listener.ListenerSubMapper;
@@ -11,12 +12,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Service
 public class DefaultListenerSubService implements ListenerSubService {
     ListenerSubPeriodService periodService;
     ListenerSubCacheService cacheService;
+    ListenerSubPlanService planService;
     ListenerSubPeriodMapper periodMapper;
     ListenerSubMapper subMapper;
 
@@ -43,5 +47,10 @@ public class DefaultListenerSubService implements ListenerSubService {
     public BasicSubResponse getCurrentBasicByListenerId(String listenerId) {
         ListenerSubResponse detail = getCurrentDetailByListenerId(listenerId);
         return subMapper.toBasicSubscriptionResponse(detail);
+    }
+
+    @Override
+    public List<ListenerSubPlanResponse> getAllPlans(boolean isFirstSubscription) {
+        return planService.getAllPlans(isFirstSubscription);
     }
 }
