@@ -4,10 +4,13 @@ import com.puresound.backend.constant.user.OAuth2Type;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
 import com.puresound.backend.dto.listener.ListenerRegisterRequest;
 import com.puresound.backend.dto.listener.ListenerResponse;
+import com.puresound.backend.dto.subscription.listener.ListenerSubPlanResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
 import com.puresound.backend.security.oauth2.OAuth2Authentication;
 import com.puresound.backend.service.user.UserService;
 import jakarta.mail.MessagingException;
+
+import java.util.List;
 
 public interface ListenerService extends UserService {
     OAuth2Authentication findOAuth2ById(String id);
@@ -31,4 +34,6 @@ public interface ListenerService extends UserService {
     ListenerResponse getById(String id);
 
     ListenerSubResponse getCurrentDetailSubscription(String listenerId);
+
+    List<ListenerSubPlanResponse> getAllSubscriptionPlans(boolean isFirstSubscription);
 }
