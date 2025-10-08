@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -54,5 +55,6 @@ public class Listener extends Base {
     Instant lastLoginAt;
 
     @OneToMany(mappedBy = "listener", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<ListenerSub> subscriptions;
+    @Builder.Default
+    List<ListenerSub> subscriptions = new ArrayList<>();
 }
