@@ -17,6 +17,9 @@ import lombok.experimental.SuperBuilder;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Image extends Base {
 
+    @Column(nullable = false)
+    String name;
+
     @Column(columnDefinition = "CHAR(26)", nullable = false)
     String imageOwnerId;
 

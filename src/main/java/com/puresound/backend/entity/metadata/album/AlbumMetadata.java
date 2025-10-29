@@ -24,6 +24,13 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AlbumMetadata extends Base {
 
+    // UPC chuẩn cần có 12 ký tự, nhưng Spotify đôi khi trả về 14???
+    @Column(name = "upc", unique = true, columnDefinition = "VARCHAR(16)")
+    String upc;
+
+    @Column(name = "ean", unique = true, columnDefinition = "CHAR(13)")
+    String ean;
+
     @Column(nullable = false)
     String name;
 
@@ -42,7 +49,7 @@ public class AlbumMetadata extends Base {
     @Column(name = "release_date", nullable = false)
     LocalDate releaseDate;
 
-    @Column(name = "release_tz", length = 10, nullable = false)
+    @Column(name = "release_tz", length = 10)
     String releaseTz;
 
     @Column(name = "release_date_precision", nullable = false)

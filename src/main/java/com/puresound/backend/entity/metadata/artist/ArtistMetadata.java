@@ -19,6 +19,9 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ArtistMetadata extends Base {
 
+    @Column(name = "ref_id", nullable = false, unique = true, columnDefinition = "CHAR(22)")
+    String refId;       // Base on Spotify ID
+
     @Column(name = "stage_name", nullable = false)
     String stageName;
 
@@ -41,7 +44,7 @@ public class ArtistMetadata extends Base {
 
     @Column(name = "verified", nullable = false)
     @Builder.Default
-    Boolean verified = false;
+    Boolean verified = true;
 
     @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

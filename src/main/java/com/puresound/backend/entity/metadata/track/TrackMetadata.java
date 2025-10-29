@@ -1,5 +1,6 @@
 package com.puresound.backend.entity.metadata.track;
 
+import com.puresound.backend.constant.metadata.Bitrate;
 import com.puresound.backend.entity.Base;
 import com.puresound.backend.entity.metadata.album.AlbumMetadata;
 import com.puresound.backend.entity.metadata.artist.ArtistTrackMetadata;
@@ -24,6 +25,9 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TrackMetadata extends Base {
 
+    @Column(name = "isrc", nullable = false, unique = true, columnDefinition = "CHAR(12)")
+    String isrc;
+
     @Column(nullable = false)
     String title;
 
@@ -43,6 +47,15 @@ public class TrackMetadata extends Base {
     @Column(name = "is_local", nullable = false)
     @Builder.Default
     Boolean isLocal = false;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "track_bitrate_metadata",
+            joinColumns = @JoinColumn(name = "track_id")
+    )
+    @Convert(converter = BitrateConverter.class)
+    @Column(name = "bitrate")
+    List<Bitrate> availableBitrates = new ArrayList<>();
 
     @OneToMany(mappedBy = "track", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
