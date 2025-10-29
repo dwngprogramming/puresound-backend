@@ -102,3 +102,8 @@ nominatim:
 weatherApi:
   url: https://api.weatherapi.com/v1/current.json
   key: ${WEATHER_API_KEY}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
