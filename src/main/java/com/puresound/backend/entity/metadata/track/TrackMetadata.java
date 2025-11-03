@@ -55,6 +55,7 @@ public class TrackMetadata extends Base {
     )
     @Convert(converter = BitrateConverter.class)
     @Column(name = "bitrate")
+    @Builder.Default
     List<Bitrate> availableBitrates = new ArrayList<>();
 
     @OneToMany(mappedBy = "track", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
