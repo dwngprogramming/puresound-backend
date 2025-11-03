@@ -103,6 +103,13 @@ weatherApi:
   url: https://api.weatherapi.com/v1/current.json
   key: ${WEATHER_API_KEY}
 
+minio:
+  endpoint: ${MINIO_ENDPOINT_URL}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  buckets:
+    tracks: puresound-tracks
+
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}

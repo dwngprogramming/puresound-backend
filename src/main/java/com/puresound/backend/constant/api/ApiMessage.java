@@ -14,6 +14,7 @@ public enum ApiMessage {
     GET_WEATHER_SUCCESS,
     GET_MY_SUBSCRIPTION_SUCCESS,
     GET_ALL_PLANS_SUCCESS,
+    GET_TRACK_SUCCESS,
 
     // Fail + Logging
     LOCKED_ACCOUNT,
@@ -39,6 +40,7 @@ public enum ApiMessage {
     EMAIL_NOT_EXISTS,
     LOCATION_NOT_FOUND,
     WEATHER_NOT_FOUND,
+    TRACK_NOT_FOUND,
 
     // Only for logging, don't show to user & don't create message locale, or show Internal Server Error
     INVALID_FORMAT_TOKEN, INVALID_OAUTH2_PROVIDER
