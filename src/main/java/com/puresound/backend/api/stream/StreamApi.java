@@ -58,10 +58,10 @@ public class StreamApi {
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CREATE_STREAM_SESSION_TOKEN, locale));
     }
 
-    @GetMapping(value = "/{trackId}/{bitrate}")
+    @GetMapping(value = "/{bitrate}/{trackId}")
     public ResponseEntity<ApiResponse<StreamInfoResponse>> streamTrack(@CookieValue(value = "stream_session") String streamSessionCookie,
-                                                                       @PathVariable String trackId,
                                                                        @PathVariable Integer bitrate,
+                                                                       @PathVariable String trackId,
                                                                        @Value("${jwt.secret}") String jwtSecret,
                                                                        @Value("${jwt.exp-stream-url-min}") long expStreamUrlMin,
                                                                        @Value("${minio.endpoint}") String streamEndpoint,
@@ -73,7 +73,7 @@ public class StreamApi {
         StreamSessionRequest streamSession = jwtTokenProvider.parseStreamToken(streamSessionCookie);
         Integer acceptedBitrate = bitrate;
         if (!streamSession.premium()) {
-            if (bitrate > 192) {
+            if (bitrate >= 192) {
                 acceptedBitrate = 192;
             } else {
                 acceptedBitrate = 128;
@@ -81,7 +81,7 @@ public class StreamApi {
         }
         long exp = Instant.now().getEpochSecond() + expStreamUrlMin * 60;
         String tokenParam = StreamTokenUtil.generateStreamingVerifyToken(trackId, acceptedBitrate, exp, jwtSecret);
-        String streamUrl = String.format("%s/%s/%d?%s", streamEndpoint, trackId, acceptedBitrate, tokenParam);
+        String streamUrl = String.format("%s/%d/%s?%s", streamEndpoint, acceptedBitrate, trackId, tokenParam);
         StreamInfoResponse streamInfo = new StreamInfoResponse(streamUrl, exp);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CREATE_STREAM_URL_SUCCESS, streamInfo, locale));
     }
