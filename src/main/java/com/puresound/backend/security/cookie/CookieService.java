@@ -26,13 +26,14 @@ public class CookieService {
     @Value("${cookie.same-site}")
     String sameSite;
 
-    public void setCookie(String key, String value, long maxAge, HttpServletResponse response) {
+    public void setCookie(String key, String value, long maxAgeMins, HttpServletResponse response) {
         if (key == null || value == null) throw new InternalServerException("Cookie key or value cannot be null");
 
+        long maxAgeSeconds = maxAgeMins * 60;
         ResponseCookie cookie = ResponseCookie.from(key, value)
                 .httpOnly(true)
                 .secure(secure)
-                .maxAge(maxAge)
+                .maxAge(maxAgeSeconds)
                 .path("/")
                 .domain(domain)
                 .sameSite(sameSite)
@@ -41,13 +42,14 @@ public class CookieService {
         response.addHeader("Set-Cookie", cookie.toString());
     }
 
-    public void setCookieWithHttpOnlyFalse(String key, String value, long maxAge, HttpServletResponse response) {
+    public void setCookieWithHttpOnlyFalse(String key, String value, long maxAgeMins, HttpServletResponse response) {
         if (key == null || value == null) throw new InternalServerException("Cookie key or value cannot be null");
 
+        long maxAgeSeconds = maxAgeMins * 60;
         ResponseCookie cookie = ResponseCookie.from(key, value)
                 .httpOnly(false)
                 .secure(secure)
-                .maxAge(maxAge)
+                .maxAge(maxAgeSeconds)
                 .path("/")
                 .domain(domain)
                 .sameSite(sameSite)

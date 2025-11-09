@@ -15,6 +15,9 @@ public enum ApiMessage {
     GET_MY_SUBSCRIPTION_SUCCESS,
     GET_ALL_PLANS_SUCCESS,
     GET_TRACK_SUCCESS,
+    CREATE_STREAM_SESSION_TOKEN,
+    STREAM_SESSION_TOKEN_EXISTS,
+    CREATE_STREAM_URL_SUCCESS,
 
     // Fail + Logging
     LOCKED_ACCOUNT,
@@ -41,6 +44,9 @@ public enum ApiMessage {
     LOCATION_NOT_FOUND,
     WEATHER_NOT_FOUND,
     TRACK_NOT_FOUND,
+    STREAM_SESSION_INVALID,
+    STREAM_SESSION_EXPIRED,
+    MISSING_COOKIE,
 
     // Only for logging, don't show to user & don't create message locale, or show Internal Server Error
     INVALID_FORMAT_TOKEN, INVALID_OAUTH2_PROVIDER

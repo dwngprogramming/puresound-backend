@@ -135,7 +135,6 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         eventPublisher.publishEvent(new AuthenticationSuccessEvent(newToken));
 
         String refreshToken = tokenProvider.generateRefreshToken(principal);
-        long maxAgeSeconds = tokenProvider.getExpRtMin() * 60;
         String exchangeCode = UlidCreator.getMonotonicUlid().toString();
 
         // Save exchange code to Redis with TTL = 2 minutes (define in service)
@@ -143,8 +142,8 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         tokenExchangeService.storeCode(exchangeCode, codeExchange);
 
         // Set RT to cookie, code to cookie with httpOnly = false
-        cookieService.setCookie("refreshToken", refreshToken, maxAgeSeconds, response);
-        cookieService.setCookieWithHttpOnlyFalse("exchangeCode", exchangeCode, maxAgeSeconds, response);
+        cookieService.setCookie("refreshToken", refreshToken, tokenProvider.getExpRtMin(), response);
+        cookieService.setCookieWithHttpOnlyFalse("exchangeCode", exchangeCode, tokenProvider.getExpRtMin(), response);
 
         // Set "linked to OAuth 2 provider if email exists in system" message to cookie
         String message = isNew ? messageSource.getMessage(ApiMessage.LINKED_TO_OAUTH2.name(), new Object[]{StringUtils.capitalize(providerType.name().toLowerCase())}, locale) : null;

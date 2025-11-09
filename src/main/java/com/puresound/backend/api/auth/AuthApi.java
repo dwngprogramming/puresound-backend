@@ -66,10 +66,9 @@ public class AuthApi {
         String refreshToken = jwtTokenProvider.generateRefreshToken(principal);
 
         TokenResponse tokenResponse = new TokenResponse(accessToken);
-        long maxAgeSeconds = jwtTokenProvider.getExpRtMin() * 60;
 
         // Set RT to cookie
-        cookieService.setCookie("refreshToken", refreshToken, maxAgeSeconds, response);
+        cookieService.setCookie("refreshToken", refreshToken, jwtTokenProvider.getExpRtMin(), response);
 
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGIN_SUCCESS, tokenResponse, locale));
     }

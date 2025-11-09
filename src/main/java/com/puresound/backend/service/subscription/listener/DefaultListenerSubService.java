@@ -50,6 +50,12 @@ public class DefaultListenerSubService implements ListenerSubService {
     }
 
     @Override
+    public boolean isCurrentSubActive(String listenerId) {
+        ListenerSubResponse currentSub = getCurrentDetailByListenerId(listenerId);
+        return currentSub != null;
+    }
+
+    @Override
     public List<ListenerSubPlanResponse> getAllPlans(boolean isFirstSubscription) {
         return planService.getAllPlans(isFirstSubscription);
     }

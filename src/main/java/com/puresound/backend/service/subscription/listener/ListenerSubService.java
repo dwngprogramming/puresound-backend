@@ -11,5 +11,7 @@ public interface ListenerSubService {
 
     BasicSubResponse getCurrentBasicByListenerId(String listenerId);
 
+    boolean isCurrentSubActive(String listenerId);
+
     List<ListenerSubPlanResponse> getAllPlans(boolean isFirstSubscription);
 }

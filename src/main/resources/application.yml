@@ -85,6 +85,8 @@ jwt:
   secret: ${JWT_SECRET}
   exp-at-min: ${EXP_AT_MIN}
   exp-rt-min: ${EXP_RT_MIN}
+  exp-stream-min: ${EXP_STREAM_MIN}
+  exp-stream-url-min: ${EXP_STREAM_URL_MIN}
 
 listener:
   callback-url: ${LISTENER_CALLBACK_URL}
@@ -114,3 +116,6 @@ cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}
   api-secret: ${CLOUDINARY_API_SECRET}
+
+stream:
+  endpoint: ${STREAM_ENDPOINT}
