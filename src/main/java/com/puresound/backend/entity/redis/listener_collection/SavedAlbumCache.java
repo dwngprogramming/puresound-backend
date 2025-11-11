@@ -1,4 +1,4 @@
-package com.puresound.backend.service.cache.library;
+package com.puresound.backend.entity.redis.listener_collection;
 
 import jakarta.persistence.Id;
 import lombok.Builder;

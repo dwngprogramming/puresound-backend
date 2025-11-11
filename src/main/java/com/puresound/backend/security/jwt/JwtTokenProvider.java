@@ -8,7 +8,6 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.puresound.backend.dto.stream.StreamSessionRequest;
-import com.puresound.backend.dto.stream.StreamTokenResponse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
@@ -159,7 +157,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public long getExpiryMilis(String token) {
+    public long getRemainingExpiryMillis(String token) {
         Jwt jwt = decodeToken(token);
         Instant exp = jwt.getExpiresAt();
         if (exp == null) {

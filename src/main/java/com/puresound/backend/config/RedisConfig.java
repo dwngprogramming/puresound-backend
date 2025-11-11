@@ -18,6 +18,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 // Thêm EnableKeyspaceEvents.ON_STARTUP để có cơ chế Phantom (Tự động xóa các index liên quan của 1 key-value)
 @Configuration
 @EnableRedisRepositories(
+        basePackages = "com.puresound.backend.repository.redis",
         enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP
 )
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

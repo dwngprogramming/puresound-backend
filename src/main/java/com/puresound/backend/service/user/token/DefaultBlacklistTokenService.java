@@ -6,6 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Service
@@ -15,9 +17,9 @@ public class DefaultBlacklistTokenService implements BlacklistTokenService {
     static String BLACKLIST_TOKEN_PREFIX = "blacklist:";
 
     @Override
-    public void deactivateToken(String token, Long expMins) {
+    public void deactivateToken(String token, Long ttlMillis) {
         String key = BLACKLIST_TOKEN_PREFIX + token;
-        redisTemplate.opsForValue().set(key, "", expMins);
+        redisTemplate.opsForValue().set(key, "", Duration.ofMillis(ttlMillis));
     }
 
     @Override

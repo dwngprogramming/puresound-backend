@@ -17,6 +17,7 @@ import com.puresound.backend.security.local.LocalAuthenticationToken;
 import com.puresound.backend.service.otp.OtpService;
 import com.puresound.backend.service.user.CommonUserService;
 import com.puresound.backend.service.user.listener.ListenerService;
+import com.puresound.backend.service.user.token.BlacklistTokenService;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
@@ -48,6 +49,7 @@ public class AuthApi {
     ListenerService listenerService;
     CookieService cookieService;
     OtpService otpService;
+    BlacklistTokenService blacklistTokenService;
 
     @PostMapping("/local/login")
     public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LocalLoginRequest request,
@@ -142,7 +144,15 @@ public class AuthApi {
 
     @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(Locale locale,
+                                                    HttpServletRequest request,
                                                     HttpServletResponse response) {
+        // Check blacklist RT
+        String refreshToken = cookieService.getCookie("refreshToken", request);
+        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+            Long remainingMillis = jwtTokenProvider.getRemainingExpiryMillis(refreshToken);
+            blacklistTokenService.deactivateToken(refreshToken, remainingMillis);
+        }
+
         // Set RT to cookie
         cookieService.deleteCookie("refreshToken", response);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGOUT_SUCCESS, locale));

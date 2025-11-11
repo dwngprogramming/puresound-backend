@@ -19,13 +19,11 @@ import com.puresound.backend.service.user.token.BlacklistTokenService;
 import com.puresound.backend.service.user.token.TokenExchangeService;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +46,8 @@ public class TokenHandlerApi {
     BlacklistTokenService blacklistTokenService;
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(HttpServletRequest request, Locale locale) {
-        String refreshToken = cookieService.getCookie("refreshToken", request);
+    public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken,
+                                                                   Locale locale) {
         if (refreshToken == null) {
             throw new BadRequestException(ApiMessage.MISSING_REFRESH_TOKEN, LogLevel.INFO);
         }
@@ -76,7 +74,6 @@ public class TokenHandlerApi {
     @PostMapping("/exchange")
     public ResponseEntity<ApiResponse<TokenResponse>> exchangeToken(@RequestBody AuthzCodeRequest request,
                                                                     @CookieValue(value = "refreshToken", required = false) String refreshToken,
-                                                                    @Value("${jwt.exp-rt-min}") long expRtMins,
                                                                     HttpServletResponse response,
                                                                     Locale locale) {
         String exchangeCode = request.code();
@@ -84,7 +81,8 @@ public class TokenHandlerApi {
         if (codeExchange.isEmpty()) {
             // Delete this login session (RT) and blacklist RT if invalid code
             if (refreshToken != null) {
-                blacklistTokenService.deactivateToken(refreshToken, expRtMins);
+                Long remainingMillis = jwtTokenProvider.getRemainingExpiryMillis(refreshToken);
+                blacklistTokenService.deactivateToken(refreshToken, remainingMillis);
             }
             cookieService.deleteCookie("refreshToken", response);
             throw new BadRequestException(ApiMessage.INVALID_EXCHANGE_CODE, LogLevel.WARN);
