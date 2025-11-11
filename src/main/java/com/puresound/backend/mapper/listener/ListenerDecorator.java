@@ -3,7 +3,7 @@ package com.puresound.backend.mapper.listener;
 import com.puresound.backend.constant.user.UserType;
 import com.puresound.backend.dto.auth.RefreshAuthentication;
 import com.puresound.backend.dto.listener.ListenerOAuthInfoRequest;
-import com.puresound.backend.entity.listener.Listener;
+import com.puresound.backend.entity.jpa.listener.Listener;
 import com.puresound.backend.security.local.LocalAuthentication;
 import com.puresound.backend.security.oauth2.OAuth2Authentication;
 import lombok.AccessLevel;

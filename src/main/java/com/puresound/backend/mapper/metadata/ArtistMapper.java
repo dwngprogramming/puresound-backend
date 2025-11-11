@@ -1,7 +1,7 @@
 package com.puresound.backend.mapper.metadata;
 
 import com.puresound.backend.dto.metadata.artist.ArtistResponse;
-import com.puresound.backend.entity.metadata.artist.ArtistMetadata;
+import com.puresound.backend.entity.jpa.metadata.artist.ArtistMetadata;
 import com.puresound.backend.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 

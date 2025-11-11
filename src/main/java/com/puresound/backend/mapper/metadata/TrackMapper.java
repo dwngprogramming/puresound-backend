@@ -1,7 +1,7 @@
 package com.puresound.backend.mapper.metadata;
 
 import com.puresound.backend.dto.metadata.track.TrackResponse;
-import com.puresound.backend.entity.metadata.track.TrackMetadata;
+import com.puresound.backend.entity.jpa.metadata.track.TrackMetadata;
 import com.puresound.backend.mapper.GlobalMapperConfig;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;

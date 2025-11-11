@@ -2,7 +2,7 @@ package com.puresound.backend.mapper.metadata;
 
 import com.puresound.backend.dto.metadata.album.AlbumResponse;
 import com.puresound.backend.dto.metadata.album.BasicAlbumResponse;
-import com.puresound.backend.entity.metadata.album.AlbumMetadata;
+import com.puresound.backend.entity.jpa.metadata.album.AlbumMetadata;
 import com.puresound.backend.mapper.GlobalMapperConfig;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
