@@ -48,6 +48,7 @@ public enum ApiMessage {
     STREAM_SESSION_INVALID,
     STREAM_SESSION_EXPIRED,
     MISSING_COOKIE,
+    LISTENER_COLLECTION_EXISTS,
 
     // Only for logging, don't show to user & don't create message locale, or show Internal Server Error
     INVALID_FORMAT_TOKEN, INVALID_OAUTH2_PROVIDER

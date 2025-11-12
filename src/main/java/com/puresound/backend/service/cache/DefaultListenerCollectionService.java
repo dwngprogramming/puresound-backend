@@ -1,6 +1,9 @@
 package com.puresound.backend.service.cache;
 
+import com.puresound.backend.constant.api.ApiMessage;
+import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.entity.redis.listener_collection.ListenerCollectionCache;
+import com.puresound.backend.exception.exts.ConflictException;
 import com.puresound.backend.repository.redis.ListenerCollectionRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,8 @@ public class DefaultListenerCollectionService implements ListenerCollectionServi
 
     @Override
     public void create(ListenerCollectionCache collection) {
+        if (isExists(collection.getListenerId()))
+            throw new ConflictException(ApiMessage.LISTENER_COLLECTION_EXISTS, LogLevel.INFO);
         collectionRepository.save(collection);
     }
 
