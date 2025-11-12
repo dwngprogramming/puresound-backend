@@ -4,6 +4,9 @@ import com.puresound.backend.entity.redis.listener_collection.ListenerCollection
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ListenerCollectionRepository extends CrudRepository<ListenerCollectionCache, String> {
+    Optional<ListenerCollectionCache> getByListenerId(String listenerId);
 }

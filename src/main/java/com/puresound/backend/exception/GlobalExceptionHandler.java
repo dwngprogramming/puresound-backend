@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -54,7 +55,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex, Locale locale) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
-            String translated = messageSource.getMessage(error, locale);
+            String translated;
+            try {
+                translated = messageSource.getMessage(error, locale);
+            } catch (NoSuchMessageException e) {
+                translated = error.getDefaultMessage();
+            }
             errors.put(error.getField(), translated);
         });
         log.warn("Validation failed. [MethodArgumentNotValidException]: {}", errors);
