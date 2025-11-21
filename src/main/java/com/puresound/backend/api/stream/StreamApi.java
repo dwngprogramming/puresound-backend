@@ -55,6 +55,7 @@ public class StreamApi {
 
         String streamToken = jwtTokenProvider.generateStreamToken(userId, isActiveSubscription);
         cookieService.setCookie("stream_session", streamToken, expStreamMin, response);
+
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CREATE_STREAM_SESSION_TOKEN, locale));
     }
 
@@ -81,8 +82,8 @@ public class StreamApi {
         }
         long exp = Instant.now().getEpochSecond() + expStreamUrlMin * 60;
         String tokenParam = StreamTokenUtil.generateStreamingVerifyToken(trackId, acceptedBitrate, exp, jwtSecret);
-        String streamUrl = String.format("%s/%d/%s?%s", streamEndpoint, acceptedBitrate, trackId, tokenParam);
-        StreamInfoResponse streamInfo = new StreamInfoResponse(streamUrl, exp);
+        String streamUrl = String.format("%s/%d/%s/m3u8?%s", streamEndpoint, acceptedBitrate, trackId, tokenParam);
+        StreamInfoResponse streamInfo = new StreamInfoResponse(streamEndpoint, streamUrl, tokenParam, exp);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CREATE_STREAM_URL_SUCCESS, streamInfo, locale));
     }
 }

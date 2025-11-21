@@ -45,12 +45,21 @@ public class DefaultListenerCollectionService implements ListenerCollectionServi
         // All fields in instance collection are always not null (because of validation)
         // Handle for recently track list size limit
         List<String> collectRecentlyTrackIds = collection.getPlaybackHistory().getRecentlyTrackIds();
+        String lastTrackId = collection.getPlaybackHistory().getLastTrackId();
 
         // Client sends empty recently track ids list, keep the existing list
-        if (currentCollection != null && collectRecentlyTrackIds.isEmpty()) {
-            collection.getPlaybackHistory().setRecentlyTrackIds(
-                    currentCollection.getPlaybackHistory().getRecentlyTrackIds()
-            );
+        if (currentCollection != null) {
+            if (collectRecentlyTrackIds.isEmpty()) {
+                collection.getPlaybackHistory().setRecentlyTrackIds(
+                        currentCollection.getPlaybackHistory().getRecentlyTrackIds()
+                );
+            }
+
+            if (lastTrackId.isBlank() && !currentCollection.getPlaybackHistory().getLastTrackId().isBlank()) {
+                collection.getPlaybackHistory().setLastTrackId(
+                        currentCollection.getPlaybackHistory().getLastTrackId()
+                );
+            }
         } else if (collectRecentlyTrackIds.size() > MAX_RECENTLY_TRACKS) {
             // Client sends recently track ids list exceeding the limit, trim it
             // Lấy một "view" từ vị trí MAX đến cuối và xóa tất cả phần tử trong đó.

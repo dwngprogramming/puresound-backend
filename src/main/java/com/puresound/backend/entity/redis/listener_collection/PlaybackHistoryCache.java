@@ -2,7 +2,9 @@ package com.puresound.backend.entity.redis.listener_collection;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.puresound.backend.constant.LoopMode;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,12 +20,12 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class PlaybackHistoryCache {
 
-    @NotBlank(message = "INVALID_REQUEST")
+    @NotNull(message = "INVALID_REQUEST")
     String lastTrackId;
 
     @NotNull(message = "INVALID_REQUEST")
     @Positive(message = "INVALID_REQUEST")
-    Long lastPlayedPositionMs;
+    Long lastPlayedPosition;
 
     @NotNull(message = "INVALID_REQUEST")
     @PastOrPresent(message = "INVALID_REQUEST")

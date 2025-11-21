@@ -13,6 +13,7 @@ import com.puresound.backend.exception.exts.UnauthorizedException;
 import com.puresound.backend.security.cookie.CookieService;
 import com.puresound.backend.security.jwt.JwtTokenProvider;
 import com.puresound.backend.security.jwt.UserPrincipal;
+import com.puresound.backend.service.subscription.listener.ListenerSubService;
 import com.puresound.backend.service.user.UserService;
 import com.puresound.backend.service.user.router.UserServiceRouter;
 import com.puresound.backend.service.user.token.BlacklistTokenService;
@@ -28,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -44,6 +46,7 @@ public class TokenHandlerApi {
     CookieService cookieService;
     TokenExchangeService tokenExchangeService;
     BlacklistTokenService blacklistTokenService;
+    ListenerSubService subService;
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken,
@@ -101,6 +104,11 @@ public class TokenHandlerApi {
         TokenResponse tokenResponse = new TokenResponse(accessToken);
 
         cookieService.deleteCookie("exchangeCode", response);
+
+        // Set stream session cookie for this user when exchange code success
+        String streamToken = jwtTokenProvider.generateStreamToken(principal.id(), subService.isCurrentSubActive(principal.id()));
+        cookieService.setCookie("stream_session", streamToken, jwtTokenProvider.getExpStreamMin(), response);
+
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGIN_SUCCESS, tokenResponse, locale));
     }
 }
