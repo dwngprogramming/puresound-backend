@@ -2,7 +2,7 @@ package com.puresound.backend.service.subscription.listener;
 
 import com.puresound.backend.dto.subscription.listener.ListenerSubPlanResponse;
 import com.puresound.backend.mapper.subscription.listener.ListenerSubPlanMapper;
-import com.puresound.backend.repository.subscription.listener.ListenerPlanRepository;
+import com.puresound.backend.repository.jpa.subscription.listener.ListenerPlanRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

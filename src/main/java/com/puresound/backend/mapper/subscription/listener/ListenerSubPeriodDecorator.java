@@ -4,7 +4,7 @@ import com.puresound.backend.constant.user.listener.BillingCycle;
 import com.puresound.backend.constant.user.listener.SubscriptionType;
 import com.puresound.backend.constant.user.listener.SubscriptionStatus;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
-import com.puresound.backend.entity.subscription.listener.ListenerSubPeriod;
+import com.puresound.backend.entity.jpa.subscription.listener.ListenerSubPeriod;
 
 public abstract class ListenerSubPeriodDecorator implements ListenerSubPeriodMapper {
 

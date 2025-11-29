@@ -1,7 +1,7 @@
 package com.puresound.backend.mapper.subscription.listener;
 
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
-import com.puresound.backend.entity.subscription.listener.ListenerSubPeriod;
+import com.puresound.backend.entity.jpa.subscription.listener.ListenerSubPeriod;
 import com.puresound.backend.mapper.GlobalMapperConfig;
 import com.puresound.backend.mapper.listener.ListenerMapper;
 import org.mapstruct.DecoratedWith;
