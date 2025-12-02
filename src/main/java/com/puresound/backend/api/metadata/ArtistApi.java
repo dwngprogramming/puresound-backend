@@ -20,6 +20,6 @@ public class ArtistApi {
 
     @GetMapping("/{id}")
     public String getArtistById(@PathVariable String id) {
-        return "Artist details";
+        return "Artist details for ID: " + id;
     }
 }
