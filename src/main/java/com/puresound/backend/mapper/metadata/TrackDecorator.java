@@ -1,8 +1,10 @@
 package com.puresound.backend.mapper.metadata;
 
 import com.puresound.backend.constant.metadata.Bitrate;
-import com.puresound.backend.dto.metadata.album.BasicAlbumResponse;
+import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
 import com.puresound.backend.dto.metadata.artist.ArtistResponse;
+import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
+import com.puresound.backend.dto.metadata.track.SimplifiedTrackResponse;
 import com.puresound.backend.dto.metadata.track.TrackResponse;
 import com.puresound.backend.entity.jpa.metadata.artist.ArtistTrackMetadata;
 import com.puresound.backend.entity.jpa.metadata.track.TrackMetadata;
@@ -36,7 +38,7 @@ public abstract class TrackDecorator implements TrackMapper {
                 .map(artistMapper::toResponse)
                 .toList();
 
-        BasicAlbumResponse album = albumMapper.toBasicAlbumResponse(trackMetadata.getAlbum());
+        SimplifiedAlbumResponse album = albumMapper.toSimplifiedAlbumResponse(trackMetadata.getAlbum());
 
         List<Integer> availableBitrates = trackMetadata.getAvailableBitrates()
                 .stream()
@@ -44,5 +46,19 @@ public abstract class TrackDecorator implements TrackMapper {
                 .toList();
 
         return response.withAdditionalData(artists, album, availableBitrates);
+    }
+
+    @Override
+    public SimplifiedTrackResponse toSimplifiedResponse(TrackMetadata trackMetadata) {
+        SimplifiedTrackResponse response = delegate.toSimplifiedResponse(trackMetadata);
+
+        SimplifiedAlbumResponse album = albumMapper.toSimplifiedAlbumResponse(trackMetadata.getAlbum());
+
+        List<SimplifiedArtistResponse> artists = trackMetadata.getArtists().stream()
+                .sorted(Comparator.comparingInt(ArtistTrackMetadata::getArtistOrder))
+                .map(ArtistTrackMetadata::getArtist)
+                .map(artistMapper::toSimplifiedResponse)
+                .toList();
+        return response.withArtistsAndAlbum(artists, album);
     }
 }
