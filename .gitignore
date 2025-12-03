@@ -41,7 +41,6 @@ out/
 
 ### Test ###
 .env.test
-application-test.yml
 docker-compose.test.yml
 
 ### Prod ###
