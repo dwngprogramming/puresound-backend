@@ -77,8 +77,8 @@ public class ListenerApi {
 
     @PutMapping("/collection/update")
     public ResponseEntity<ApiResponse<ListenerCollectionCache>> updateListenerCollection(@AuthenticationPrincipal UserPrincipal principal,
-                                                                                       @RequestBody @Valid ListenerCollectionCache collectionCache,
-                                                                                       Locale locale) {
+                                                                                         @RequestBody @Valid ListenerCollectionCache collectionCache,
+                                                                                         Locale locale) {
         if (principal == null || !principal.id().equals(collectionCache.getListenerId()))
             throw new UnauthorizedException(ApiMessage.UNAUTHENTICATED, LogLevel.WARN);
         ListenerCollectionCache updatedCollection = listenerCollectionService.update(collectionCache);
