@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ApiResponse<T>(
-        @Schema(description = "Response code of the API call", example = "200")
+        @Schema(description = "Response code of the API call", example = "REQUEST_SUCCESS")
         String code,
 
         @Schema(description = "Response message of the API call", example = "Request processed successfully")

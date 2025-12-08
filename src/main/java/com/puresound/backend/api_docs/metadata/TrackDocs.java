@@ -16,7 +16,7 @@ public interface TrackDocs {
     @Operation(summary = "Get Popular Tracks",
             description = "Retrieve a paginated list of popular tracks (10 track/page request).")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "REQUEST_SUCCESS",
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
                     description = "Get popular tracks successfully"),
     })
     ResponseEntity<ApiResponse<SPFResponse<SimplifiedTrackResponse>>> getPopularTracks(Integer page, Locale locale);
