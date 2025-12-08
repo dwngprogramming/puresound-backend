@@ -1,8 +1,9 @@
 package com.puresound.backend.mapper.metadata;
 
 import com.puresound.backend.dto.metadata.album.AlbumResponse;
-import com.puresound.backend.dto.metadata.album.BasicAlbumResponse;
+import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
 import com.puresound.backend.dto.metadata.artist.ArtistResponse;
+import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
 import com.puresound.backend.entity.jpa.metadata.album.AlbumMetadata;
 import com.puresound.backend.entity.jpa.metadata.artist.ArtistAlbumMetadata;
 import lombok.AccessLevel;
@@ -37,14 +38,14 @@ public abstract class AlbumDecorator implements AlbumMapper {
     }
 
     @Override
-    public BasicAlbumResponse toBasicAlbumResponse(AlbumMetadata album) {
-        BasicAlbumResponse response = delegate.toBasicAlbumResponse(album);
+    public SimplifiedAlbumResponse toSimplifiedAlbumResponse(AlbumMetadata album) {
+        SimplifiedAlbumResponse response = delegate.toSimplifiedAlbumResponse(album);
 
-        List<ArtistResponse> sortedArtists = album.getArtists()
+        List<SimplifiedArtistResponse> sortedArtists = album.getArtists()
                 .stream()
                 .sorted(Comparator.comparingInt(ArtistAlbumMetadata::getArtistOrder))
                 .map(ArtistAlbumMetadata::getArtist)
-                .map(artistMapper::toResponse)
+                .map(artistMapper::toSimplifiedResponse)
                 .toList();
 
         return response.withArtists(sortedArtists);

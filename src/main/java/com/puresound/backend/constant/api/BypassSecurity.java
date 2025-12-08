@@ -10,11 +10,13 @@ public class BypassSecurity {
             "/api/v1/weather/current",
             "/api/v1/listener/plans",
             "/api/v1/stream/**",
+            "/api/v1/tracks/**",
             "/oauth2/**",
             "/api/v1/public/**",
             "/api/v1/files/public/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
+            "/documentation/**",
             "/actuator/health",
             "/favicon.ico",
             "/error"
