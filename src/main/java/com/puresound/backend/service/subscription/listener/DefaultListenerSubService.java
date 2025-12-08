@@ -4,7 +4,7 @@ import com.puresound.backend.dto.subscription.BasicSubResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubCache;
 import com.puresound.backend.dto.subscription.listener.ListenerSubPlanResponse;
 import com.puresound.backend.dto.subscription.listener.ListenerSubResponse;
-import com.puresound.backend.entity.subscription.listener.ListenerSubPeriod;
+import com.puresound.backend.entity.jpa.subscription.listener.ListenerSubPeriod;
 import com.puresound.backend.mapper.subscription.listener.ListenerSubMapper;
 import com.puresound.backend.mapper.subscription.listener.ListenerSubPeriodMapper;
 import lombok.AccessLevel;
@@ -47,6 +47,12 @@ public class DefaultListenerSubService implements ListenerSubService {
     public BasicSubResponse getCurrentBasicByListenerId(String listenerId) {
         ListenerSubResponse detail = getCurrentDetailByListenerId(listenerId);
         return subMapper.toBasicSubscriptionResponse(detail);
+    }
+
+    @Override
+    public boolean isCurrentSubActive(String listenerId) {
+        ListenerSubResponse currentSub = getCurrentDetailByListenerId(listenerId);
+        return currentSub != null;
     }
 
     @Override

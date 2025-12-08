@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.puresound.backend")
+@EnableJpaRepositories(basePackages = "com.puresound.backend.repository.jpa")
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JpaConfig {
     @Bean

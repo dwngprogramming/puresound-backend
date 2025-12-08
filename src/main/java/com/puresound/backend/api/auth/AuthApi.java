@@ -15,8 +15,10 @@ import com.puresound.backend.security.jwt.JwtTokenProvider;
 import com.puresound.backend.security.jwt.UserPrincipal;
 import com.puresound.backend.security.local.LocalAuthenticationToken;
 import com.puresound.backend.service.otp.OtpService;
+import com.puresound.backend.service.subscription.listener.ListenerSubService;
 import com.puresound.backend.service.user.CommonUserService;
 import com.puresound.backend.service.user.listener.ListenerService;
+import com.puresound.backend.service.user.token.BlacklistTokenService;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
@@ -46,8 +48,10 @@ public class AuthApi {
     ApiResponseFactory apiResponseFactory;
     CommonUserService commonUserService;
     ListenerService listenerService;
+    ListenerSubService subService;
     CookieService cookieService;
     OtpService otpService;
+    BlacklistTokenService blacklistTokenService;
 
     @PostMapping("/local/login")
     public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LocalLoginRequest request,
@@ -66,10 +70,13 @@ public class AuthApi {
         String refreshToken = jwtTokenProvider.generateRefreshToken(principal);
 
         TokenResponse tokenResponse = new TokenResponse(accessToken);
-        long maxAgeSeconds = jwtTokenProvider.getExpRtMin() * 60;
 
         // Set RT to cookie
-        cookieService.setCookie("refreshToken", refreshToken, maxAgeSeconds, response);
+        cookieService.setCookie("refreshToken", refreshToken, jwtTokenProvider.getExpRtMin(), response);
+
+        // Create Stream Session Token for new login and set to cookie
+        String streamToken = jwtTokenProvider.generateStreamToken(principal.id(), subService.isCurrentSubActive(principal.id()));
+        cookieService.setCookie("stream_session", streamToken, jwtTokenProvider.getExpStreamMin(), response);
 
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGIN_SUCCESS, tokenResponse, locale));
     }
@@ -143,7 +150,15 @@ public class AuthApi {
 
     @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(Locale locale,
+                                                    HttpServletRequest request,
                                                     HttpServletResponse response) {
+        // Check blacklist RT
+        String refreshToken = cookieService.getCookie("refreshToken", request);
+        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+            Long remainingMillis = jwtTokenProvider.getRemainingExpiryMillis(refreshToken);
+            blacklistTokenService.deactivateToken(refreshToken, remainingMillis);
+        }
+
         // Set RT to cookie
         cookieService.deleteCookie("refreshToken", response);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGOUT_SUCCESS, locale));

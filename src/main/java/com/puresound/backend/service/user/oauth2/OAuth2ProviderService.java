@@ -1,7 +1,7 @@
 package com.puresound.backend.service.user.oauth2;
 
 import com.puresound.backend.dto.auth.OAuth2ProviderRequest;
-import com.puresound.backend.entity.oauth2.OAuth2Provider;
+import com.puresound.backend.entity.jpa.oauth2.OAuth2Provider;
 
 import java.util.Optional;
 

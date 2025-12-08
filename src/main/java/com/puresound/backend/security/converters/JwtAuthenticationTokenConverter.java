@@ -1,11 +1,16 @@
 package com.puresound.backend.security.converters;
 
+import com.puresound.backend.constant.api.ApiMessage;
+import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.constant.user.UserType;
+import com.puresound.backend.exception.exts.UnauthorizedException;
 import com.puresound.backend.security.jwt.CustomJwtAuthenticationToken;
 import com.puresound.backend.security.jwt.UserPrincipal;
+import com.puresound.backend.service.user.token.BlacklistTokenService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,9 +25,15 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAuthenticationTokenConverter implements Converter<Jwt, AbstractAuthenticationToken> {
     RoleConverter roleConverter;
+    BlacklistTokenService blacklistTokenService;
 
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
+        String accessToken = jwt.getTokenValue();
+        // Check blacklist
+        if (blacklistTokenService.isBlacklisted(accessToken)) {
+            throw new UnauthorizedException(ApiMessage.INVALID_TOKEN, LogLevel.INFO);
+        }
         // Extract data from JWT
         String userId = jwt.getSubject();
         String email = jwt.getClaimAsString("email");

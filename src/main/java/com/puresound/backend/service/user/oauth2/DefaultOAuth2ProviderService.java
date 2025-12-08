@@ -1,9 +1,9 @@
 package com.puresound.backend.service.user.oauth2;
 
 import com.puresound.backend.dto.auth.OAuth2ProviderRequest;
-import com.puresound.backend.entity.oauth2.OAuth2Provider;
+import com.puresound.backend.entity.jpa.oauth2.OAuth2Provider;
 import com.puresound.backend.mapper.oauth2.OAuth2ProviderMapper;
-import com.puresound.backend.repository.oauth2.OAuth2ProviderRepository;
+import com.puresound.backend.repository.jpa.oauth2.OAuth2ProviderRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
