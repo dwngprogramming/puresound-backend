@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.puresound'
-version = '1.0.6'   // App version will be used in deploy info (in workflows/basic-ci-cd.yml)
+version = '1.0.6'   // App version will be used in deploy info (in workflows/production-ci-cd.yml)
 
 java {
     toolchain {
