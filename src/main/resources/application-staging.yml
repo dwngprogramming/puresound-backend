@@ -25,7 +25,7 @@ spring:
   docker:
     compose:
       enabled: false
-      file: docker-compose.dev.yml
+      file: docker-compose.staging.yml
 
 cookie:
   secure: false

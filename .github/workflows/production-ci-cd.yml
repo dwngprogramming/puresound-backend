@@ -1,4 +1,4 @@
-name: basic-ci-cd.yml
+name: Production CI/CD Pipeline
 on:
   push:
     branches: ["main"]

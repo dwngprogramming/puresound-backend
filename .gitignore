@@ -39,12 +39,13 @@ out/
 ### Dev Secret ###
 .env.dev.secret
 
-### Test ###
-.env.test
-docker-compose.test.yml
+### Staging ###
+.env.staging
+docker-compose.staging.yml
 
 ### Prod ###
 .env.prod
 .env.prod.*
 docker-compose.prod.yml
 blue-green.sh
+deploy-staging.sh
