@@ -36,6 +36,6 @@ public class DefaultTrackService implements TrackService {
     public SPFResponse<SimplifiedTrackResponse> getPopularTracks(SPFRequest request) {
         Pageable pageable = PageRequest.of(request.page() - 1, request.size(), request.sort());
         Page<TrackMetadata> trackMetadataPage = trackRepository.findAll(pageable);
-        return trackMapper.toSpfSimplifiedResponses(trackMetadataPage, request.sort());
+        return trackMapper.toSpfSimplifiedResponses(trackMetadataPage);
     }
 }

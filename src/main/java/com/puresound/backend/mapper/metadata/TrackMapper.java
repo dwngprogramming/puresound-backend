@@ -31,19 +31,21 @@ public interface TrackMapper {
     @Mapping(target = "artists", ignore = true)
     SimplifiedTrackResponse toSimplifiedResponse(TrackMetadata trackMetadata);
 
-    default SPFResponse<SimplifiedTrackResponse> toSpfSimplifiedResponses(Page<TrackMetadata> trackMetadataPage, Sort sort) {
+    default SPFResponse<SimplifiedTrackResponse> toSpfSimplifiedResponses(Page<TrackMetadata> trackMetadataPage) {
         List<SimplifiedTrackResponse> content = trackMetadataPage
                 .map(this::toSimplifiedResponse)
                 .getContent();
 
-        String sortBy = sort.isSorted() ? sort.iterator().next().getProperty() : null;
-        String sortDirection = sort.isSorted() ? sort.iterator().next().getDirection().name() : null;
+        Sort currentSort = trackMetadataPage.getSort();
+        String sortBy = currentSort.isSorted() ? currentSort.iterator().next().getProperty() : null;
+        String sortDirection = currentSort.isSorted() ? currentSort.iterator().next().getDirection().name() : null;
 
         PagingResponse pagingResponse = PagingResponse.builder()
                 .page(trackMetadataPage.getNumber() + 1)
                 .size(trackMetadataPage.getSize())
                 .first(trackMetadataPage.isFirst())
                 .last(trackMetadataPage.isLast())
+                .numberOfElements(trackMetadataPage.getNumberOfElements())
                 .totalElements(trackMetadataPage.getTotalElements())
                 .totalPages(trackMetadataPage.getTotalPages())
                 .sortBy(sortBy)
