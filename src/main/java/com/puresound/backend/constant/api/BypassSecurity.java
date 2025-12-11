@@ -11,6 +11,7 @@ public class BypassSecurity {
             "/api/v1/listener/plans",
             "/api/v1/stream/**",
             "/api/v1/tracks/**",
+            "/api/v1/artists/**",
             "/oauth2/**",
             "/api/v1/public/**",
             "/api/v1/files/public/**",

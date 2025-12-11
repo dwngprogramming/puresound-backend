@@ -23,7 +23,7 @@ import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/tracks")
+@RequestMapping(value = "/api/v1/artists")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ArtistApi implements ArtistDocs {
     final ArtistService artistService;
