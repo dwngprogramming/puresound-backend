@@ -28,7 +28,7 @@ public class TrackApi implements TrackDocs {
     final ApiResponseFactory apiResponseFactory;
 
     @Value("${paging-size.default}")
-    private Integer defaultSize;
+    Integer defaultSize;
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TrackResponse>> getTrackById(@PathVariable String id, Locale locale) {
