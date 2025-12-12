@@ -29,18 +29,21 @@ import java.util.Locale;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/stream")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Tag(name = "Stream API", description = "API for Streaming Music feature")
 @Slf4j
 public class StreamApi {
-    ListenerSubService subService;
-    JwtTokenProvider jwtTokenProvider;
-    CookieService cookieService;
-    ApiResponseFactory apiResponseFactory;
+    final ListenerSubService subService;
+    final JwtTokenProvider jwtTokenProvider;
+    final CookieService cookieService;
+    final ApiResponseFactory apiResponseFactory;
+
+    @Value("${cookie.stream-name}")
+    String streamKey;
 
     @GetMapping(value = "/session/token")
     public ResponseEntity<ApiResponse<Void>> verifyOrCreateStreamSessionToken(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                                              @CookieValue(value = "stream_session", required = false) String streamSessionCookie,
+                                                                              @CookieValue(value = "${cookie.stream-name}", required = false) String streamSessionCookie,
                                                                               @Value("${jwt.exp-stream-min}") long expStreamMin,
                                                                               HttpServletResponse response,
                                                                               Locale locale) {
@@ -54,13 +57,13 @@ public class StreamApi {
         boolean isActiveSubscription = userPrincipal != null && subService.isCurrentSubActive(userPrincipal.id());
 
         String streamToken = jwtTokenProvider.generateStreamToken(userId, isActiveSubscription);
-        cookieService.setCookie("stream_session", streamToken, expStreamMin, response);
+        cookieService.setCookie(streamKey, streamToken, expStreamMin, response);
 
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CREATE_STREAM_SESSION_TOKEN, locale));
     }
 
     @GetMapping(value = "/{bitrate}/{trackId}")
-    public ResponseEntity<ApiResponse<StreamInfoResponse>> streamTrack(@CookieValue(value = "stream_session") String streamSessionCookie,
+    public ResponseEntity<ApiResponse<StreamInfoResponse>> streamTrack(@CookieValue(value = "${cookie.stream-name}") String streamSessionCookie,
                                                                        @PathVariable Integer bitrate,
                                                                        @PathVariable String trackId,
                                                                        @Value("${jwt.secret}") String jwtSecret,

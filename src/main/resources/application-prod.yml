@@ -59,6 +59,8 @@ management:
 
 cookie:
   secure: true
+  rt-name: refresh_token
+  stream-name: stream_session
   domain: ${COOKIE_DOMAIN}
   same-site: None
 

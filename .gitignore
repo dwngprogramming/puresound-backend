@@ -36,8 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
-### Dev Secret ###
-.env.dev.secret
+### Dev ###
+.env.dev
 
 ### Staging ###
 .env.staging
