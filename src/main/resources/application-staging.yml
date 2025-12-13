@@ -1,9 +1,22 @@
+server:
+  forward-headers-strategy: framework
+
 spring:
   datasource:
     url: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
     username: root
     password: ${MYSQL_ROOT_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 3
+      idle-timeout: 120000
+      connection-timeout: 30000
+
+  docker:
+    compose:
+      enabled: false
+      file: docker-compose.prod.yml
 
   jpa:
     hibernate:
@@ -22,15 +35,12 @@ spring:
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
 
-  docker:
-    compose:
-      enabled: false
-      file: docker-compose.staging.yml
-
 cookie:
-  secure: false
+  secure: true
+  rt-name: stg-refresh_token
+  stream-name: stg-stream_session
   domain: ${COOKIE_DOMAIN}
-  same-site: Lax
+  same-site: None
 
 management:
   health:

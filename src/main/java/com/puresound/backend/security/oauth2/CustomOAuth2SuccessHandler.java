@@ -57,6 +57,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     @Value("${artist.callback-url}")
     String artistCallbackUrl;
 
+    @Value("${cookie.rt-name}")
+    String rtKey;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -142,7 +145,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         tokenExchangeService.storeCode(exchangeCode, codeExchange);
 
         // Set RT to cookie, code to cookie with httpOnly = false
-        cookieService.setCookie("refreshToken", refreshToken, tokenProvider.getExpRtMin(), response);
+        cookieService.setCookie(rtKey, refreshToken, tokenProvider.getExpRtMin(), response);
         cookieService.setCookieWithHttpOnlyFalse("exchangeCode", exchangeCode, tokenProvider.getExpRtMin(), response);
 
         // Set "linked to OAuth 2 provider if email exists in system" message to cookie
