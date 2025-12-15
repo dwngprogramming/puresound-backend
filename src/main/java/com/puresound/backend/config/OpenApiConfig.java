@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "OrangeTech API", version = "v1.0.0", description = "OrangeTech API Documentation"))
+@OpenAPIDefinition(info = @Info(title = "OrangeTech API", version = "1.0.6", description = "OrangeTech API Documentation"))
 @SecurityScheme(
         name = "bearerAuth",
         type = SecuritySchemeType.HTTP,

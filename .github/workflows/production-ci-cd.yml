@@ -1,10 +1,11 @@
-name: basic-ci-cd.yml
+name: Production CI/CD Pipeline
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build-and-deploy:
+  production-deployment:
+    name: Build & Deploy to Production
     runs-on: ubuntu-latest
 
     steps:

@@ -36,15 +36,16 @@ out/
 ### VS Code ###
 .vscode/
 
-### Dev Secret ###
-.env.dev.secret
+### Dev ###
+.env.dev
 
-### Test ###
-.env.test
-docker-compose.test.yml
+### Staging ###
+.env.staging
+docker-compose.staging.yml
 
 ### Prod ###
 .env.prod
 .env.prod.*
 docker-compose.prod.yml
 blue-green.sh
+deploy-staging.sh

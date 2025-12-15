@@ -25,6 +25,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -35,17 +36,24 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/token")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Tag(name = "Token API", description = "API for Token handling feature")
 @Slf4j
 public class TokenHandlerApi {
-    UserServiceRouter userServiceRouter;
-    JwtTokenProvider jwtTokenProvider;
-    ApiResponseFactory apiResponseFactory;
-    CookieService cookieService;
-    TokenExchangeService tokenExchangeService;
-    BlacklistTokenService blacklistTokenService;
-    ListenerSubService subService;
+    final UserServiceRouter userServiceRouter;
+    final JwtTokenProvider jwtTokenProvider;
+    final ApiResponseFactory apiResponseFactory;
+    final CookieService cookieService;
+    final TokenExchangeService tokenExchangeService;
+    final BlacklistTokenService blacklistTokenService;
+    final ListenerSubService subService;
+
+    @Value("${cookie.stream-name}")
+    String streamKey;
+
+    @Value("${cookie.rt-name}")
+    String rtKey;
+
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken,
@@ -86,7 +94,7 @@ public class TokenHandlerApi {
                 Long remainingMillis = jwtTokenProvider.getRemainingExpiryMillis(refreshToken);
                 blacklistTokenService.deactivateToken(refreshToken, remainingMillis);
             }
-            cookieService.deleteCookie("refreshToken", response);
+            cookieService.deleteCookie(rtKey, response);
             throw new BadRequestException(ApiMessage.INVALID_EXCHANGE_CODE, LogLevel.WARN);
         }
 
@@ -106,7 +114,7 @@ public class TokenHandlerApi {
 
         // Set stream session cookie for this user when exchange code success
         String streamToken = jwtTokenProvider.generateStreamToken(principal.id(), subService.isCurrentSubActive(principal.id()));
-        cookieService.setCookie("stream_session", streamToken, jwtTokenProvider.getExpStreamMin(), response);
+        cookieService.setCookie(streamKey, streamToken, jwtTokenProvider.getExpStreamMin(), response);
 
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGIN_SUCCESS, tokenResponse, locale));
     }

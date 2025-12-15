@@ -29,6 +29,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -39,19 +40,25 @@ import java.util.Locale;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/auth")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Tag(name = "Authentication API", description = "API for Authentication feature")
 @Slf4j
 public class AuthApi {
-    AuthenticationManager authenticationManager;
-    JwtTokenProvider jwtTokenProvider;
-    ApiResponseFactory apiResponseFactory;
-    CommonUserService commonUserService;
-    ListenerService listenerService;
-    ListenerSubService subService;
-    CookieService cookieService;
-    OtpService otpService;
-    BlacklistTokenService blacklistTokenService;
+    final AuthenticationManager authenticationManager;
+    final JwtTokenProvider jwtTokenProvider;
+    final ApiResponseFactory apiResponseFactory;
+    final CommonUserService commonUserService;
+    final ListenerService listenerService;
+    final ListenerSubService subService;
+    final CookieService cookieService;
+    final OtpService otpService;
+    final BlacklistTokenService blacklistTokenService;
+
+    @Value("${cookie.rt-name}")
+    String rtKey;
+
+    @Value("${cookie.stream-name}")
+    String streamKey;
 
     @PostMapping("/local/login")
     public ResponseEntity<ApiResponse<TokenResponse>> listenerLogin(@Valid @RequestBody LocalLoginRequest request,
@@ -72,11 +79,11 @@ public class AuthApi {
         TokenResponse tokenResponse = new TokenResponse(accessToken);
 
         // Set RT to cookie
-        cookieService.setCookie("refreshToken", refreshToken, jwtTokenProvider.getExpRtMin(), response);
+        cookieService.setCookie(rtKey, refreshToken, jwtTokenProvider.getExpRtMin(), response);
 
         // Create Stream Session Token for new login and set to cookie
         String streamToken = jwtTokenProvider.generateStreamToken(principal.id(), subService.isCurrentSubActive(principal.id()));
-        cookieService.setCookie("stream_session", streamToken, jwtTokenProvider.getExpStreamMin(), response);
+        cookieService.setCookie(streamKey, streamToken, jwtTokenProvider.getExpStreamMin(), response);
 
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGIN_SUCCESS, tokenResponse, locale));
     }
