@@ -30,7 +30,7 @@ cookie:
   secure: false
   rt-name: dev-refresh_token
   stream-name: dev-stream_session
-  domain: ${COOKIE_DOMAIN:localhost}
+  domain: ${COOKIE_DOMAIN:}
   same-site: Lax
 
 management:
