@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
 import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder(toBuilder = true)
 public record SimplifiedTrackResponse(
 
         @Schema(description = "Unique identifier of the track", example = "01K8NFN35729A5PHCQ7FNYG8BH")

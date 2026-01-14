@@ -2,6 +2,7 @@ package com.puresound.backend.service.image;
 
 import com.puresound.backend.constant.image.OwnerType;
 import com.puresound.backend.dto.image.ImageResponse;
+import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
 import com.puresound.backend.dto.metadata.artist.ArtistResponse;
 import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
 import com.puresound.backend.entity.jpa.image.Image;
@@ -35,11 +36,10 @@ public class DefaultImageService implements ImageService {
 
     @Override
     public ArtistResponse addImagesToArtist(ArtistResponse artist) {
-        Image image = imageRepository.findByImageOwnerIdAndImageOwnerType(artist.id(), OwnerType.ARTIST)
-                .orElse(null);
-        List<ImageResponse> images = image != null ? List.of(imageMapper.toResponse(image)) : List.of();
+        List<Image> image = imageRepository.findByImageOwnerIdAndImageOwnerType(artist.id(), OwnerType.ARTIST);
+
         return artist.toBuilder()
-                .images(images)
+                .images(imageMapper.toResponses(image))
                 .build();
     }
 
@@ -57,11 +57,10 @@ public class DefaultImageService implements ImageService {
 
     @Override
     public SimplifiedArtistResponse addImagesToSimplifiedArtist(SimplifiedArtistResponse artist) {
-        Image image = imageRepository.findByImageOwnerIdAndImageOwnerType(artist.id(), OwnerType.ARTIST)
-                .orElse(null);
-        List<ImageResponse> images = image != null ? List.of(imageMapper.toResponse(image)) : List.of();
+        List<Image> images = imageRepository.findByImageOwnerIdAndImageOwnerType(artist.id(), OwnerType.ARTIST);
+
         return artist.toBuilder()
-                .images(images)
+                .images(imageMapper.toResponses(images))
                 .build();
     }
 
@@ -71,6 +70,27 @@ public class DefaultImageService implements ImageService {
         Map<String, List<ImageResponse>> imagesMap = getImagesByOwnerIdsAndOwnerType(ids, OwnerType.ARTIST);
 
         return artists.stream()
+                .map(a -> a.toBuilder()
+                        .images(imagesMap.getOrDefault(a.id(), List.of()))
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public SimplifiedAlbumResponse addImagesToSimplifiedAlbum(SimplifiedAlbumResponse album) {
+        List<Image> images = imageRepository.findByImageOwnerIdAndImageOwnerType(album.id(), OwnerType.ALBUM);
+
+        return album.toBuilder()
+                .images(imageMapper.toResponses(images))
+                .build();
+    }
+
+    @Override
+    public List<SimplifiedAlbumResponse> addImagesToSimplifiedAlbums(List<SimplifiedAlbumResponse> albums) {
+        List<String> ids = albums.stream().map(SimplifiedAlbumResponse::id).toList();
+        Map<String, List<ImageResponse>> imagesMap = getImagesByOwnerIdsAndOwnerType(ids, OwnerType.ALBUM);
+
+        return albums.stream()
                 .map(a -> a.toBuilder()
                         .images(imagesMap.getOrDefault(a.id(), List.of()))
                         .build())
