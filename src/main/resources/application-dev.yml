@@ -1,4 +1,8 @@
 spring:
+  config:
+    import:
+      optional:file:.env.dev[.properties]
+
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:puresound-database}
     username: ${MYSQL_USERNAME:root}
