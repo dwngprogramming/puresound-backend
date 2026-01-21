@@ -8,7 +8,7 @@ public class BypassSecurity {
             "/api/v1/auth/**",
             "/api/v1/token/**",
             "/api/v1/weather/current",
-            "/api/v1/listener/plans",
+            "/api/v1/plans",
             "/api/v1/stream/**",
             "/api/v1/tracks/**",
             "/api/v1/artists/**",

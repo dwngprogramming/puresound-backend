@@ -28,44 +28,36 @@ import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/listener")
+@RequestMapping(value = "/api/v1/me")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Tag(name = "Listener API", description = "API for Listener feature")
-@Slf4j
+@Tag(name = "Authenticated Listener API", description = "API for Authenticated Listener feature")
 public class ListenerApi {
     ListenerService listenerService;
     ListenerCollectionService listenerCollectionService;
     ApiResponseFactory apiResponseFactory;
 
-    @GetMapping("/me")
+    @GetMapping(produces = "application/json")
     public ResponseEntity<ApiResponse<ListenerResponse>> getMe(@AuthenticationPrincipal UserPrincipal principal, Locale locale) {
         String id = principal.id();
         ListenerResponse listenerResponse = listenerService.getById(id);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_LISTENER_SUCCESS, listenerResponse, locale));
     }
 
-    @GetMapping("/subscription/base")
+    @GetMapping(value = "/subscription/base", produces = "application/json")
     public ResponseEntity<ApiResponse<BasicSubResponse>> getMyBasicSubscription(@AuthenticationPrincipal UserPrincipal principal, Locale locale) {
         String id = principal.id();
         BasicSubResponse subscription = listenerService.getCurrentBaseSubscription(id);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_MY_SUBSCRIPTION_SUCCESS, subscription, locale));
     }
 
-    @GetMapping("/subscription/detail")
+    @GetMapping(value = "/subscription/detail", produces = "application/json")
     public ResponseEntity<ApiResponse<ListenerSubResponse>> getMyDetailSubscription(@AuthenticationPrincipal UserPrincipal principal, Locale locale) {
         String id = principal.id();
         ListenerSubResponse subscription = listenerService.getCurrentDetailSubscription(id);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_MY_SUBSCRIPTION_SUCCESS, subscription, locale));
     }
 
-    @GetMapping("/plans")
-    public ResponseEntity<ApiResponse<List<ListenerSubPlanResponse>>> getSubscriptionPlans(Locale locale) {
-        boolean isFirstSubscription = false; // TODO: Temporary set to false, need to check from user's subscription history
-        List<ListenerSubPlanResponse> plans = listenerService.getAllSubscriptionPlans(isFirstSubscription);
-        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_ALL_PLANS_SUCCESS, plans, locale));
-    }
-
-    @PostMapping("/collection/create")
+    @PostMapping(value = "/collection", produces = "application/json")
     public ResponseEntity<ApiResponse<Void>> createListenerCollection(@AuthenticationPrincipal UserPrincipal principal,
                                                                       @RequestBody @Valid ListenerCollectionCache collectionCache,
                                                                       Locale locale) {
@@ -75,7 +67,7 @@ public class ListenerApi {
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.CREATE_LISTENER_COLLECTION_SUCCESS, locale));
     }
 
-    @PutMapping("/collection/update")
+    @PutMapping(value = "/collection", produces = "application/json")
     public ResponseEntity<ApiResponse<ListenerCollectionCache>> updateListenerCollection(@AuthenticationPrincipal UserPrincipal principal,
                                                                                          @RequestBody @Valid ListenerCollectionCache collectionCache,
                                                                                          Locale locale) {
