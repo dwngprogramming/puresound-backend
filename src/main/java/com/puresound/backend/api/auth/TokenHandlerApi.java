@@ -56,7 +56,7 @@ public class TokenHandlerApi {
 
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken,
+    public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(@CookieValue(value = "${cookie.rt-name}", required = false) String refreshToken,
                                                                    Locale locale) {
         if (refreshToken == null) {
             throw new BadRequestException(ApiMessage.MISSING_REFRESH_TOKEN, LogLevel.INFO);
@@ -83,7 +83,7 @@ public class TokenHandlerApi {
 
     @PostMapping("/exchange")
     public ResponseEntity<ApiResponse<TokenResponse>> exchangeToken(@RequestBody AuthzCodeRequest request,
-                                                                    @CookieValue(value = "refreshToken", required = false) String refreshToken,
+                                                                    @CookieValue(value = "${cookie.rt-name}", required = false) String refreshToken,
                                                                     HttpServletResponse response,
                                                                     Locale locale) {
         String exchangeCode = request.code();

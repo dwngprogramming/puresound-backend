@@ -42,8 +42,9 @@ public class DefaultTrackService implements TrackService {
     public SPFResponse<SimplifiedTrackResponse> getPopularTracks(SPFRequest request) {
         Pageable pageable = PageRequest.of(request.page() - 1, request.size(), request.sort());
         Page<TrackMetadata> trackMetadataPage = trackRepository.findAll(pageable);
+        SPFResponse<SimplifiedTrackResponse> dataConvert = trackMapper.toSpfSimplifiedResponses(trackMetadataPage);
 
-        List<SimplifiedTrackResponse> tracks = trackMapper.toSpfSimplifiedResponses(trackMetadataPage).content();
+        List<SimplifiedTrackResponse> tracks = dataConvert.content();
         List<SimplifiedTrackResponse> tracksAfterAddImages = tracks.stream()
                 .map(track -> {
                     List<SimplifiedArtistResponse> artistsWithImages = imageService.addImagesToSimplifiedArtists(track.artists());
@@ -52,6 +53,6 @@ public class DefaultTrackService implements TrackService {
                 })
                 .toList();
 
-        return SPFResponse.of(tracksAfterAddImages, trackMapper.toSpfSimplifiedResponses(trackMetadataPage).paging());
+        return SPFResponse.of(tracksAfterAddImages, dataConvert.paging());
     }
 }
