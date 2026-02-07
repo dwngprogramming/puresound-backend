@@ -22,7 +22,6 @@ import com.puresound.backend.service.user.token.BlacklistTokenService;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -156,18 +155,17 @@ public class AuthApi {
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(Locale locale,
-                                                    HttpServletRequest request,
-                                                    HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<Void>> logout(@CookieValue(value = "${cookie.rt-name}", required = false) String refreshToken,
+                                                    HttpServletResponse response,
+                                                    Locale locale) {
         // Check blacklist RT
-        String refreshToken = cookieService.getCookie("refreshToken", request);
         if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
             Long remainingMillis = jwtTokenProvider.getRemainingExpiryMillis(refreshToken);
             blacklistTokenService.deactivateToken(refreshToken, remainingMillis);
         }
 
         // Set RT to cookie
-        cookieService.deleteCookie("refreshToken", response);
+        cookieService.deleteCookie(rtKey, response);
         return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.LOGOUT_SUCCESS, locale));
     }
 }
