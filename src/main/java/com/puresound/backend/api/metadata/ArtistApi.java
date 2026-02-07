@@ -39,6 +39,6 @@ public class ArtistApi implements ArtistDocs {
         Integer sanitizedPage = Math.max(page, 1);
         SPFRequest request = SPFRequest.withPopularityDefaultSort(sanitizedPage, defaultSize);
         SPFResponse<SimplifiedArtistResponse> response = artistService.getFeaturedArtists(request);
-        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_ARTIST_SUCCESS, response, locale));
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_ARTISTS_SUCCESS, response, locale));
     }
 }
