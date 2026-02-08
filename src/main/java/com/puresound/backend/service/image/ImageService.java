@@ -2,6 +2,7 @@ package com.puresound.backend.service.image;
 
 import com.puresound.backend.constant.image.OwnerType;
 import com.puresound.backend.dto.image.ImageResponse;
+import com.puresound.backend.dto.metadata.album.AlbumResponse;
 import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
 import com.puresound.backend.dto.metadata.artist.ArtistResponse;
 import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
@@ -21,6 +22,10 @@ public interface ImageService {
     SimplifiedArtistResponse addImagesToSimplifiedArtist(SimplifiedArtistResponse artist);
 
     List<SimplifiedArtistResponse> addImagesToSimplifiedArtists(List<SimplifiedArtistResponse> artists);
+
+    AlbumResponse addImagesToAlbum(AlbumResponse album);
+
+    List<AlbumResponse> addImagesToAlbums(List<AlbumResponse> albums);
 
     SimplifiedAlbumResponse addImagesToSimplifiedAlbum(SimplifiedAlbumResponse album);
 
