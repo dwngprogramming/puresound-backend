@@ -2,6 +2,7 @@ package com.puresound.backend.service.image;
 
 import com.puresound.backend.constant.image.OwnerType;
 import com.puresound.backend.dto.image.ImageResponse;
+import com.puresound.backend.dto.metadata.album.AlbumResponse;
 import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
 import com.puresound.backend.dto.metadata.artist.ArtistResponse;
 import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
@@ -70,6 +71,27 @@ public class DefaultImageService implements ImageService {
         Map<String, List<ImageResponse>> imagesMap = getImagesByOwnerIdsAndOwnerType(ids, OwnerType.ARTIST);
 
         return artists.stream()
+                .map(a -> a.toBuilder()
+                        .images(imagesMap.getOrDefault(a.id(), List.of()))
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public AlbumResponse addImagesToAlbum(AlbumResponse album) {
+        List<Image> images = imageRepository.findByImageOwnerIdAndImageOwnerType(album.id(), OwnerType.ALBUM);
+
+        return album.toBuilder()
+                .images(imageMapper.toResponses(images))
+                .build();
+    }
+
+    @Override
+    public List<AlbumResponse> addImagesToAlbums(List<AlbumResponse> albums) {
+        List<String> ids = albums.stream().map(AlbumResponse::id).toList();
+        Map<String, List<ImageResponse>> imagesMap = getImagesByOwnerIdsAndOwnerType(ids, OwnerType.ALBUM);
+
+        return albums.stream()
                 .map(a -> a.toBuilder()
                         .images(imagesMap.getOrDefault(a.id(), List.of()))
                         .build())

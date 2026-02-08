@@ -1,10 +1,13 @@
 package com.puresound.backend.api.metadata;
 
 import com.puresound.backend.constant.api.ApiMessage;
+import com.puresound.backend.constant.api.LogLevel;
 import com.puresound.backend.dto.ApiResponse;
+import com.puresound.backend.dto.metadata.album.AlbumResponse;
 import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
 import com.puresound.backend.dto.pagination.SPFRequest;
 import com.puresound.backend.dto.pagination.SPFResponse;
+import com.puresound.backend.exception.exts.BadRequestException;
 import com.puresound.backend.service.metadata.album.AlbumService;
 import com.puresound.backend.util.ApiResponseFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,12 +34,14 @@ public class AlbumApi {
     @Value("${paging-size.default}")
     Integer defaultSize;
 
-    @GetMapping("/{id}")
-    public String getAlbumById(@PathVariable String id) {
-        return "Album details";
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<ApiResponse<AlbumResponse>> getAlbumById(@PathVariable String id, Locale locale) {
+        if (!id.matches("(?i)^[0-9A-HJKMNP-TV-Z]{26}$")) throw new BadRequestException(ApiMessage.ALBUM_ID_INVALID, LogLevel.INFO);
+        AlbumResponse response = albumService.getAlbumById(id);
+        return ResponseEntity.ok(apiResponseFactory.create(ApiMessage.GET_ALBUM_SUCCESS, response, locale));
     }
 
-    @GetMapping("/popular-albums")
+    @GetMapping(value = "/popular-albums", produces = "application/json")
     public ResponseEntity<ApiResponse<SPFResponse<SimplifiedAlbumResponse>>> getPopularAlbums(@RequestParam(defaultValue = "1") Integer page,
                                                                                                     Locale locale) {
         Integer sanitizedPage = Math.max(page, 1);
