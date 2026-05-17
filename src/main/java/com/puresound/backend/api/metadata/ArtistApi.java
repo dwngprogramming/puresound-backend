@@ -11,6 +11,7 @@ import com.puresound.backend.util.ApiResponseFactory;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +25,12 @@ import java.util.Locale;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/artists")
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ArtistApi implements ArtistDocs {
-    final ArtistService artistService;
-    final ApiResponseFactory apiResponseFactory;
+    ArtistService artistService;
+    ApiResponseFactory apiResponseFactory;
 
+    @NonFinal
     @Value("${paging-size.default}")
     Integer defaultSize;
 

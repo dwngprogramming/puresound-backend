@@ -2,7 +2,6 @@ package com.puresound.backend.mapper.metadata;
 
 import com.puresound.backend.constant.metadata.Bitrate;
 import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
-import com.puresound.backend.dto.metadata.artist.ArtistResponse;
 import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
 import com.puresound.backend.dto.metadata.track.SimplifiedTrackResponse;
 import com.puresound.backend.dto.metadata.track.TrackResponse;
@@ -32,10 +31,10 @@ public abstract class TrackDecorator implements TrackMapper {
     @Override
     public TrackResponse toResponse(TrackMetadata trackMetadata) {
         TrackResponse response = delegate.toResponse(trackMetadata);
-        List<ArtistResponse> artists = trackMetadata.getArtists().stream()
+        List<SimplifiedArtistResponse> artists = trackMetadata.getArtists().stream()
                 .sorted(Comparator.comparingInt(ArtistTrackMetadata::getArtistOrder))
                 .map(ArtistTrackMetadata::getArtist)
-                .map(artistMapper::toResponse)
+                .map(artistMapper::toSimplifiedResponse)
                 .toList();
 
         SimplifiedAlbumResponse album = albumMapper.toSimplifiedAlbumResponse(trackMetadata.getAlbum());

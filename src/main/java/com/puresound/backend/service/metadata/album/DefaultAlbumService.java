@@ -46,6 +46,7 @@ public class DefaultAlbumService implements AlbumService {
     public AlbumResponse getAlbumById(String id) {
         AlbumMetadata albumMetadata = albumRepository.findById(id).
                 orElseThrow(() -> new NotFoundException(ApiMessage.ALBUM_NOT_FOUND, LogLevel.INFO));
+
         return imageService.addImagesToAlbum(albumMapper.toAlbumResponse(albumMetadata));
     }
 }
