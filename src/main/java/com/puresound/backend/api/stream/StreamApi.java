@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -29,22 +30,38 @@ import java.util.Locale;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/stream")
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Stream API", description = "API for Streaming Music feature")
 @Slf4j
 public class StreamApi {
-    final ListenerSubService subService;
-    final JwtTokenProvider jwtTokenProvider;
-    final CookieService cookieService;
-    final ApiResponseFactory apiResponseFactory;
+    ListenerSubService subService;
+    JwtTokenProvider jwtTokenProvider;
+    CookieService cookieService;
+    ApiResponseFactory apiResponseFactory;
 
+    @NonFinal
     @Value("${cookie.stream-name}")
     String streamKey;
+
+    @NonFinal
+    @Value("${jwt.secret}")
+    String jwtSecret;
+
+    @NonFinal
+    @Value("${jwt.exp-stream-url-min}")
+    long expStreamUrlMin;
+
+    @NonFinal
+    @Value("${minio.endpoint}")
+    String streamEndpoint;
+
+    @NonFinal
+    @Value("${jwt.exp-stream-min}")
+    long expStreamMin;
 
     @GetMapping(value = "/session/token")
     public ResponseEntity<ApiResponse<Void>> verifyOrCreateStreamSessionToken(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                                               @CookieValue(value = "${cookie.stream-name}", required = false) String streamSessionCookie,
-                                                                              @Value("${jwt.exp-stream-min}") long expStreamMin,
                                                                               HttpServletResponse response,
                                                                               Locale locale) {
         // If stream session cookie exists and is valid, return success response
@@ -66,9 +83,6 @@ public class StreamApi {
     public ResponseEntity<ApiResponse<StreamInfoResponse>> streamTrack(@CookieValue(value = "${cookie.stream-name}") String streamSessionCookie,
                                                                        @PathVariable Integer bitrate,
                                                                        @PathVariable String trackId,
-                                                                       @Value("${jwt.secret}") String jwtSecret,
-                                                                       @Value("${jwt.exp-stream-url-min}") long expStreamUrlMin,
-                                                                       @Value("${minio.endpoint}") String streamEndpoint,
                                                                        Locale locale) {
         if (streamSessionCookie == null)
             throw new UnauthorizedException(ApiMessage.STREAM_SESSION_INVALID, LogLevel.WARN);

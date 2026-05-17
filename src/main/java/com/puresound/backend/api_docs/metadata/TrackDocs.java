@@ -15,7 +15,7 @@ public interface TrackDocs {
 
     @Operation(summary = "Get Popular Tracks",
             description = """
-                    Retrieve a paginated list of popular tracks (10 track/page).</br>
+                    Retrieve a paginated list of popular tracks (10 tracks/page).</br>
                     Default page is `1`, sort by `popularity` and sort direction is `DESC`.</br>
                     <b>Note:</b> Request from user when using pagination will be transformed to `SPFRequest`.</br>
                     """)

@@ -2,7 +2,6 @@ package com.puresound.backend.mapper.metadata;
 
 import com.puresound.backend.dto.metadata.album.AlbumResponse;
 import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
-import com.puresound.backend.dto.metadata.artist.ArtistResponse;
 import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
 import com.puresound.backend.entity.jpa.metadata.album.AlbumMetadata;
 import com.puresound.backend.entity.jpa.metadata.artist.ArtistAlbumMetadata;
@@ -27,11 +26,11 @@ public abstract class AlbumDecorator implements AlbumMapper {
         // Map các field thông thường
         AlbumResponse response = delegate.toAlbumResponse(album);
 
-        List<ArtistResponse> sortedArtists = album.getArtists()
+        List<SimplifiedArtistResponse> sortedArtists = album.getArtists()
                 .stream()
                 .sorted(Comparator.comparingInt(ArtistAlbumMetadata::getArtistOrder))
                 .map(ArtistAlbumMetadata::getArtist)
-                .map(artistMapper::toResponse)
+                .map(artistMapper::toSimplifiedResponse)
                 .toList();
 
         return response.withArtists(sortedArtists);       // Create a new AlbumResponse with the artists populated

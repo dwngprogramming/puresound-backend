@@ -2,7 +2,7 @@ package com.puresound.backend.dto.metadata.track;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
-import com.puresound.backend.dto.metadata.artist.ArtistResponse;
+import com.puresound.backend.dto.metadata.artist.SimplifiedArtistResponse;
 import com.puresound.backend.dto.metadata.genre.GenreResponse;
 
 import java.util.List;
@@ -17,11 +17,11 @@ public record TrackResponse(
         Integer popularity,
         Boolean isLocal,
         List<Integer> availableBitrates,
-        List<ArtistResponse> artists,
+        List<SimplifiedArtistResponse> artists,
         SimplifiedAlbumResponse album,
         List<GenreResponse> genres
 ) {
-    public TrackResponse withAdditionalData(List<ArtistResponse> artists,
+    public TrackResponse withAdditionalData(List<SimplifiedArtistResponse> artists,
                                             SimplifiedAlbumResponse album,
                                             List<Integer> availableBitrates) {
         return new TrackResponse(
