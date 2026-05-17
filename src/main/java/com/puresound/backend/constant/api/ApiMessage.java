@@ -21,6 +21,7 @@ public enum ApiMessage {
     CREATE_LISTENER_COLLECTION_SUCCESS,
     GET_ARTISTS_SUCCESS,
     GET_ALBUMS_SUCCESS,
+    GET_ALBUM_SUCCESS,
 
     // Fail + Logging
     LOCKED_ACCOUNT,
@@ -51,6 +52,8 @@ public enum ApiMessage {
     STREAM_SESSION_EXPIRED,
     MISSING_COOKIE,
     LISTENER_COLLECTION_EXISTS,
+    ALBUM_NOT_FOUND,
+    ALBUM_ID_INVALID,
 
     // Only for logging, don't show to user & don't create message locale, or show Internal Server Error
     INVALID_FORMAT_TOKEN, INVALID_OAUTH2_PROVIDER

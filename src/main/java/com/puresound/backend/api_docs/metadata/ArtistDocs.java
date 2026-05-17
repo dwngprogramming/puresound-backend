@@ -15,7 +15,7 @@ public interface ArtistDocs {
 
     @Operation(summary = "Get Featured Artists",
             description = """
-                    Retrieve a paginated list of featured artists (10 track/page).</br>
+                    Retrieve a paginated list of featured artists (10 artists/page).</br>
                     Default page is `1`, sort by `popularity` and sort direction is `DESC`.</br>
                     <b>Note:</b> Request from user when using pagination will be transformed to `SPFRequest`.</br>
                     """)

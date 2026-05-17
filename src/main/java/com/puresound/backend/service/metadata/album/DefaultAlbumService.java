@@ -1,9 +1,13 @@
 package com.puresound.backend.service.metadata.album;
 
+import com.puresound.backend.constant.api.ApiMessage;
+import com.puresound.backend.constant.api.LogLevel;
+import com.puresound.backend.dto.metadata.album.AlbumResponse;
 import com.puresound.backend.dto.metadata.album.SimplifiedAlbumResponse;
 import com.puresound.backend.dto.pagination.SPFRequest;
 import com.puresound.backend.dto.pagination.SPFResponse;
 import com.puresound.backend.entity.jpa.metadata.album.AlbumMetadata;
+import com.puresound.backend.exception.exts.NotFoundException;
 import com.puresound.backend.mapper.metadata.AlbumMapper;
 import com.puresound.backend.repository.jpa.metadata.album.AlbumRepository;
 import com.puresound.backend.service.image.ImageService;
@@ -36,5 +40,13 @@ public class DefaultAlbumService implements AlbumService {
                 .map(imageService::addImagesToSimplifiedAlbum)
                 .toList();
         return SPFResponse.of(albumsAfterAddImages, dataConvert.paging());
+    }
+
+    @Override
+    public AlbumResponse getAlbumById(String id) {
+        AlbumMetadata albumMetadata = albumRepository.findById(id).
+                orElseThrow(() -> new NotFoundException(ApiMessage.ALBUM_NOT_FOUND, LogLevel.INFO));
+
+        return imageService.addImagesToAlbum(albumMapper.toAlbumResponse(albumMetadata));
     }
 }
