@@ -22,6 +22,7 @@ public enum ApiMessage {
     GET_ARTISTS_SUCCESS,
     GET_ALBUMS_SUCCESS,
     GET_ALBUM_SUCCESS,
+    GET_SEARCH_SUGGESTIONS_SUCCESS,
 
     // Fail + Logging
     LOCKED_ACCOUNT,

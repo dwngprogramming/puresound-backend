@@ -13,6 +13,7 @@ public class BypassSecurity {
             "/api/v1/tracks/**",
             "/api/v1/artists/**",
             "/api/v1/albums/**",
+            "/api/v1/search/**",
             "/oauth2/**",
             "/api/v1/public/**",
             "/api/v1/files/public/**",
